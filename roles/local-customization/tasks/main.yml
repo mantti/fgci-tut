@@ -1,0 +1,29 @@
+---
+# This playbook contains common customizations for all machines
+
+#- name: Run yum update -y
+#  yum: name=* state=latest
+#  sudo: yes
+
+- name: Copy bash inputrc to remote host
+  tags: local,bash
+  copy: src=inputrc dest=/root/.inputrc
+
+# install some "missing" packages
+- include: RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: admin.yml
+  hosts: admin
+
+- include: fileserver.yml
+  hosts: nfs
+
+#- name: Add mgmt-adresses to /etc/hosts.local
+#  tags: local,dns
+#  template: src=hosts.local.j2 dest=/etc/hosts.local owner=root group=admin mode=0644
+#  with_items: groups.compute
+

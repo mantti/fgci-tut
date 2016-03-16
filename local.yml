@@ -65,6 +65,7 @@
   - { role: ansible-role-serial-console, tags: [ 'serial', 'console' ] }
   - { role: ansible-role-cuda, tags: [ 'cuda', 'nvidia' ] }
   - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
+  - { role: local-customization, tags: ['local'] }
 
 # Adding a role here? Make sure you add it to compute.yml for it to work with ansible push
 

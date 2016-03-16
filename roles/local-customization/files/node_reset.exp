@@ -1,0 +1,27 @@
+#!/usr/bin/expect --
+
+source [file join [file dirname [info script]] library.exp]
+if {[llength $argv] == 0} {
+	puts "usage: reset.exc {#}"
+	puts "		Will press the virtual reset button"
+	exit 1
+}
+
+ssh_connect $argv
+
+set timeout 60
+
+expect {
+	"*</>hpiLO->*" {
+		send "power reset\r"
+	}
+	"*/admin1->" {
+		send "reset -f /system1\r"
+	}
+}
+expect { 
+	"*</>hpiLO->*" {}
+	"*/admin1->" {}
+}
+send "exit\r"
+
