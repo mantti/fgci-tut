@@ -1,0 +1,15 @@
+# ansible-playbook file: site.yml
+#
+
+# Warning: there are a few steps in between the following roles that still need to be carried out manually.
+#           This playbook is more, at this point, a guideline for the proper deployment sequence 
+
+- include: admin.yml
+- include: provisioning.yml
+- include: install.yml
+#- include: tools/reinstall_node.yml
+- include: nfs.yml
+- include: login.yml
+#- include: tools/reinstall_computes.yml
+- include: compute.yml
+- include: grid.yml

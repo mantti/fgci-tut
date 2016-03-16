@@ -1,0 +1,71 @@
+---
+
+# Order of roles is important
+# vars are documented in https://github.com/CSC-IT-Center-for-Science/fgci-ansible/tree/master/examples
+# slurm_type - we only do the slurm service node tasks because submit/compute depend on the munge key from the service node task.
+
+ - hosts: localhost
+   remote_user: root
+   vars:
+     - trusted_public_networks: "10.0.0.0/8"
+     - trusted_public_ipv6_networks: "fd11::/64"
+     - adminMailAddr: "changeme@example.com"
+     - yum_conf_template: False
+     - nis_server: True
+     - fail2ban_jails:
+         sshd:
+           enabled: 'true'
+           port: 'ssh'
+           logpath: '/var/log/secure'
+           maxretry: '6'
+         sshd-ddos:
+           enabled: 'true'
+           port: 'ssh'
+           logpath: '/var/log/secure'
+           maxretry: '6'
+
+# on docker there's no rsyslog by default and thus no /var/log/secure
+   pre_tasks:
+     - name: test only - make sure /var/log directory exists
+       file: path=/var/log state=directory
+     - name: test only - touch /var/log/secure logfile
+       file: path=/var/log/secure state=touch
+
+   roles:
+     - fgci-ansible
+     - ansible-role-fgci-repo
+     - ansible-role-yum
+     - ansible-role-cvmfs
+     - ansible-role-aliases
+     - ansible-role-arc-client
+#     - ansible-role-arc-frontend
+     - ansible-role-collectd
+     - ansible-role-cuda
+#     - ansible-role-dhcp_server
+#     - ansible-role-dnsmasq
+     - ansible-role-fail2ban
+     - ansible-role-ferm-firewall
+     - ansible-role-fgci-bash
+#     - ansible-role-nfs
+#     - ansible-role-nfs_mount
+     - ansible-role-nhc
+     - ansible-role-nis
+     - ansible-role-ntp
+     - ansible-role-postfix
+#     - ansible-role-pxe_bootstrap
+#     - ansible-role-pxe_config
+     - ansible-role-rdma
+     - ansible-role-rsyslog
+#     - ansible-role-slurm
+     - ansible-role-smartd
+     - ansible-role-squid
+     - ansible-role-sshd
+     - ansible-role-sshd-host-keys
+     - ansible-role-system-limits
+     - ansible-role-users
+     - ansible-role-yum-cron-2
+#     - dns
+#     - ip_forwarder
+#     - network_interface
+#     - provision_vm
+     - ansible-role-flowdock

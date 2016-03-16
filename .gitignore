@@ -1,0 +1,38 @@
+
+hosts
+ssh.config
+ansible.cfg
+group_vars/*
+# Note: the main secrets.yml file should go into group_vars/all/ folder
+# Ignore secrets.yml in case it accidentally gets copied somewhere else.
+secrets.yml
+
+# Slurm Munge key auto generated
+files/munge.key
+files/certificates/*
+# Node SSHd host keys are generated into here
+files/nodes/*
+
+# Ignore roles pulled through requirements.yml. See README.
+roles/ansible-role-*
+
+# Backup files
+backup/
+hosts_*
+*.bak
+*~
+*.swp
+
+# notes file
+notes
+
+# Credentials auto-generated
+*_rootpw
+
+
+# by Luís
+requirements-latest.yml
+
+# pdsh's /etc/machines file created by ansible-role-pdsh-machines
+files/machines
+files/dsh/*

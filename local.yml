@@ -1,0 +1,70 @@
+---
+
+# This playbook is used with ansible-pull
+#
+- hosts: compute
+  remote_user: root
+
+  vars:
+
+    workdir: /var/lib/ansible/local
+    logfile: /var/log/ansible-pull.log
+    cron_user: root
+    schedule: '*/15 * * * *'
+    repo_url: https://github.com/CSC-IT-Center-for-Science/fgci-ansible.git
+
+  # Before the roles
+  pre_tasks:
+      
+    - name: get variables files
+      get_url: url="http://{{ pull_install_ip }}/pull_variables.yml" dest=/root mode=0640
+      tags: pull
+
+    - name: include variables
+      include_vars: /root/pull_variables.yml
+      tags: pull
+
+    - name: Install ansible
+      yum: pkg=ansible state=installed
+
+    - name: Create local directory to work from
+      file: path={{workdir}} state=directory owner=root group=root mode=0751
+
+  # After the roles
+  post_tasks:
+    - name: set cron interval for ansible-pull
+      cron: name='ansible-pull' user=root job='/bin/bash /usr/local/bin/ansible-pull-script.sh >/var/log/ansible.log 2>&1' minute="*/{{ ansible_pull_cron_minute_interval }}" cron_file=ansible-pull
+      tags: pull
+
+  roles:
+  - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
+  - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
+  - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-ntp, tags: [ 'ntp' ] }
+  - { role: ansible-role-autofs, tags: [ 'autofs' ] }
+  - { role: ansible-role-nis, tags: [ 'nis' ] }
+  - { role: ansible-role-adauth, tags: [ 'auth' ] }
+  - { role: ansible-role-pam, tags: [ 'auth', 'pam' ] }
+  - { role: ansible-role-nsswitch, tags: [ 'nsswitch', 'auth' ] }
+  - { role: ansible-role-yum-cron-2, tags: [ 'yumcron' ] }
+  - { role: ansible-role-rsyslog, tags: [ 'rsyslog' ] }
+  - { role: ansible-role-aliases, tags: [ 'aliases', 'email' ] }
+  - { role: ansible-role-nfs_mount, tags: [ 'nfsmount' ] }
+  - { role: ansible-role-sshd-host-keys, tags: [ 'sshd', 'ssh', 'host-keys' ] }
+  - { role: ansible-role-nhc, tags: [ 'nhc', 'slurm' ] }
+  - { role: ansible-role-slurm, tags: [ 'slurm' ] }
+  - { role: ansible-role-cvmfs, tags: [ 'cvmfs' ] }
+  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
+  - { role: ansible-role-system-limits, tags: [ 'limits', 'limit' ] }
+  - { role: ansible-role-arc-client, tags: [ 'arc', 'nordugrid' ] }
+  - { role: ansible-role-fgci-bash, tags: [ 'bash'] }
+  - { role: ansible-role-dell, tags: [ 'dell' ] }
+  - { role: ansible-role-smartd, tags: [ 'smartd', 'smart' ] }
+  - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
+  - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
+  - { role: ansible-role-serial-console, tags: [ 'serial', 'console' ] }
+  - { role: ansible-role-cuda, tags: [ 'cuda', 'nvidia' ] }
+  - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
+
+# Adding a role here? Make sure you add it to compute.yml for it to work with ansible push
+
