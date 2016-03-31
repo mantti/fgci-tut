@@ -36,6 +36,7 @@
   - { role: ansible-role-pxe_config, tags: [ 'pxe_config', 'pxe' ] }
   - { role: ansible-role-yum-cron-2, tags: [ 'yumcron' ] }
   - { role: ansible-role-rsyslog, tags: [ 'rsyslog' ] }
+  - { role: ansible-role-open-vm-tools, tags: ['open-vm-tools'] }
   - { role: ansible-role-slurm, tags: [ 'slurm' ] }
   - { role: ansible-role-aliases, tags: [ 'aliases', 'email' ] }
   - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
@@ -44,6 +45,7 @@
   - { role: ansible-role-pdsh-machines, tags: [ 'pdsh', 'machines' ] }
   - { role: ansible-role-adauth, tags: [ 'auth' ] }
   - { role: ansible-role-gitmirror, tags: [ 'gitmirror'] }
+  - { role: ansible-role-idmapd, tags: [ 'idmapd'] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
   - { role: local-customization, tags: ['local'] }
  

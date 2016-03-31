@@ -5,7 +5,7 @@
 
 - src: https://github.com/CSC-IT-Center-for-Science/ansible-role-fgci-install
   path: roles
-  version: v1.1.0
+  version: v1.2.0
 
 # called -2 because it replaces another role called ansible-role-yum-cron
 - src: https://github.com/jeffwidman/ansible-yum-cron
@@ -44,7 +44,7 @@
 
 - src: https://github.com/CSC-IT-Center-for-Science/ansible-role-slurm
   path: roles
-  version: 79ec9499046ca9d1d6e98fd131dceea9880893bd
+  version: v1.2.1
 
 - src: https://github.com/CSC-IT-Center-for-Science/ansible-role-cvmfs
   path: roles
@@ -87,7 +87,7 @@
 
 - src: https://github.com/CSC-IT-Center-for-Science/ansible-role-pxe_config
   path: roles
-  version: v1.0.0
+  version: v1.0.1
 
 - src: https://github.com/CSC-IT-Center-for-Science/ansible-role-dnsmasq
   path: roles
@@ -147,7 +147,7 @@
 
 - src: https://github.com/mhakala/ansible-role-adauth
   path: roles
-  version: ecf00602f08c84ae5a183983809f813d0a937c88
+  version: bb2c30281165153e187a7b0fd96c34f1878adb3d
 
 - src: https://github.com/CSC-IT-Center-for-Science/ansible-role-pdsh-machines
   path: roles
@@ -178,3 +178,15 @@
 - src: https://github.com/jabl/ansible-role-gitmirror.git
   path: roles
   version: acafcaff5094b5d7f9da796096068d62ae895b85
+
+- src: https://github.com/mhakala/ansible-role-idmapd.git
+  path: roles
+  version: 336875424c799846e455004871a77f7655c1f8c6
+
+- src: https://github.com/mhakala/ansible-role-samba.git
+  path: roles
+  version: ca4c6dbca39231e61dbaf07e19d5b7f5b0786d3d
+
+- src: https://github.com/jabl/ansible-role-open-vm-tools.git
+  path: roles
+  version: v1.0.0
