@@ -15,6 +15,3 @@
   tags: local,packages
   yum: name=zsh state=installed
 
-- name: Copy Dell Perccli.rpm to fileservers
-  tags: fileserver
-  copy: src=perccli-1.11.03-1.noarch.rpm dest=/tmp
