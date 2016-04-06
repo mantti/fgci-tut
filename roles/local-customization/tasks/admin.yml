@@ -26,6 +26,7 @@
         line="{{ hostvars[item].mgmt_ip_addr }} {{ hostvars[item].pxe_name }}-ilo" 
         state=present
   when: hostvars[item].mgmt_ip_addr is defined 
-  with_items: groups.compute
+  with_items: "{{groups['compute'] + groups['nfs'] + groups['login']}}" 
+# groups.production
   tags: local,mgmt
 
