@@ -13,3 +13,7 @@
 - hosts: install
   roles:
   - local-customization-install
+
+- hosts: nfs
+  roles:
+  - local-customization-nfs

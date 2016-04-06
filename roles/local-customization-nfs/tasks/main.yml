@@ -1,0 +1,3 @@
+---
+- name: Copy Dell Perccli.rpm to fileservers
+  copy: src=perccli-1.11.03-1.noarch.rpm dest=/tmp
