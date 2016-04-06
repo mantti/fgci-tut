@@ -19,6 +19,9 @@
 - include: admin.yml
   hosts: admin
 
+- include: install.yml
+  hosts: install
+
 - include: fileserver.yml
   hosts: nfs
 
