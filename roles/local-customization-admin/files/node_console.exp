@@ -1,0 +1,54 @@
+#!/usr/bin/expect --
+
+source [file join [file dirname [info script]] library.exp]
+#global opts spawn_id
+
+if {[llength $argv] == 0} {
+	        puts "usage: node_console.exc {#}"
+			        exit 1
+}
+
+# Set terminal title
+#puts \033\]0\;iLO(root)\ at\ $argv\007
+
+ssh_connect $argv
+
+set timeout 60
+
+expect {
+	"*</>hpiLO-> " {
+		send "vsp\r"
+		expect "Starting virtual serial port. " {send "\r"}
+
+		# Clear screen
+		puts \033\[2J
+		# Cursor to line1
+		puts \033\[H
+
+		send_user "\n\n > > >  To exit from serial console press ESC-( followed by exit command.  < < <\n\n"
+		interact {
+			\004	{send "\004";
+					send_user "\n To exit from serial console press ESC-( followed by exit command.\n"
+			}
+		}
+	}
+	"*/admin1->" {
+		send "console com2\r"
+		expect "Connected to Serial" {send "\r"}
+
+		# Clear screen
+		puts \033\[2J
+		# Cursor to line1
+		puts \033\[H
+
+		send_user "\n\n > > >  To exit from serial console press CTRL-\\ followed by exit command.  < < <\n\n"
+		interact {
+			\004	{send "\004";
+					send_user "\n To exit from serial console press CTRL-\\ followed by exit command.\n"
+			}
+		}
+	}
+}
+
+
+

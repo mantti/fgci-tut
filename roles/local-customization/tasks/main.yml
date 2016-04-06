@@ -16,14 +16,10 @@
 - include: Debian.yml
   when: ansible_os_family == 'Debian'
 
-- include: admin.yml
-  hosts: admin
-
-- include: install.yml
-  hosts: install
-
-- include: fileserver.yml
-  hosts: nfs
+#- name: Propagate install-nodes rsa-key to hosts
+#  tags: local
+#  when: ansible_hostname != 'admin'
+#  authorized_key: user=root key="{{ lookup('file', 'files/install_rsa.pub') }}"
 
 #- name: Add mgmt-adresses to /etc/hosts.local
 #  tags: local,dns
