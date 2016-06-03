@@ -47,6 +47,7 @@
   - { role: ansible-role-gitmirror, tags: [ 'gitmirror'] }
   - { role: ansible-role-idmapd, tags: [ 'idmapd'] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
+  - { role: local-customization, tags: ['local'] }
  
 - name: grab facts from production nodes
   hosts: production

@@ -1,0 +1,33 @@
+---
+# Tasks for only admin-node
+- name: Copy Idrac & ilo node-reset -script to admin-node
+  tags: admin
+  copy: src=node_reset.exp mode=0755 dest=/usr/local/sbin
+
+- name: Copy Idrac & ilo node-poweron -script to admin-node
+  tags: admin
+  copy: src=node_poweron.exp mode=0755 dest=/usr/local/sbin
+
+- name: Copy Idrac & ilo node-poweroff -script to admin-node
+  tags: admin
+  copy: src=node_poweroff.exp mode=0755 dest=/usr/local/sbin
+
+- name: Copy Idrac & ilo node-console -script to admin-node
+  tags: admin
+  copy: src=node_console.exp mode=0755 dest=/usr/local/sbin
+
+- name: Copy expect-admin-library to admin-node
+  tags: admin
+  copy: src=library.exp dest=/usr/local/sbin
+
+- name: populate /etc/hosts file with mgmt-addresses
+  lineinfile: 
+        dest=/etc/hosts 
+        regexp='^{{ hostvars[item].mgmt_ip_addr }} {{ hostvars[item].pxe_name }}-ilo' 
+        line="{{ hostvars[item].mgmt_ip_addr }} {{ hostvars[item].pxe_name }}-ilo" 
+        state=present
+  when: hostvars[item].mgmt_ip_addr is defined 
+  with_items: "{{groups['compute'] + groups['nfs'] + groups['login']}}" 
+# groups.production
+  tags: local,mgmt
+

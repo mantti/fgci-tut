@@ -1,0 +1,28 @@
+#!/usr/bin/expect --
+
+source [file join [file dirname [info script]] library.exp]
+if {[llength $argv] == 0} {
+	    puts "usage: poweroff.exc {#}"
+		puts "		Will press and hold virtual power button to force poweroff"
+		exit 1
+}
+
+ssh_connect $argv
+
+send "\r"
+
+expect {
+		"*</>hpiLO-> " {
+			send "power off hard\r"
+		}
+		"*/admin1->" {
+			send "stop -f /system1\r"
+		}
+	}
+expect {
+	"*</>hpiLO-> " {}
+	"*/admin1->" {}
+}
+send "exit\r"
+
+

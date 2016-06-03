@@ -40,4 +40,5 @@
   - { role: ansible-role-fgci-bash, tags: [ 'bash'] }
   - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
+  - { role: local-customization, tags: ['local'] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
