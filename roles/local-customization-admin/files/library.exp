@@ -1,0 +1,12 @@
+# Library of common functions for HP iLO connectivity
+proc ssh_connect {host} {
+	global opts spawn_id
+	spawn ssh -i ~/ilo_console_key -o "StrictHostKeyChecking no" fgiadmin@$host-ilo
+	set timeout 60
+	expect {
+		"*password:*" {send "fgiadmin\r"}
+		timeout {send_user "Timeout in connection!";exit}
+		"*/admin1->" {}
+		"*</>hpiLO->*" {}
+	}
+}

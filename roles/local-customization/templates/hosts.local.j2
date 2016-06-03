@@ -1,0 +1,6 @@
+{% for item in groups['compute'] %}
+{% if hostvars[item]['mgmt_ip_addr'] %}
+{{  hostvars[item]['mgmt_ip_addr'] }} {{ item }}-ilo
+{% endif %}
+{% endfor %}
+

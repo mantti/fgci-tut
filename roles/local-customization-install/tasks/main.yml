@@ -1,0 +1,12 @@
+---
+- name: Create ssh-key to root-user
+  tags: admin
+  user: name=root generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
+
+- name: fetch the generated rsa-key-public to localhost
+  fetch: >
+        src=".ssh/id_rsa.pub" dest="files/install_rsa.pub"
+        owner=mmoa group=ssh_keys mode=0640 backup=no 
+        validate_checksum=yes fail_on_missing=yes
+        flat=yes
+        

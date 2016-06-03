@@ -1,0 +1,19 @@
+---
+# ansible-playbook file: local-customization.yml
+#
+
+- hosts: all
+  roles:
+  - local-customization
+
+- hosts: admin
+  roles: 
+  - local-customization-admin
+
+- hosts: install
+  roles:
+  - local-customization-install
+
+- hosts: nfs
+  roles:
+  - local-customization-nfs

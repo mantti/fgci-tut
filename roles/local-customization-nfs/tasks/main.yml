@@ -1,0 +1,7 @@
+---
+- name: Copy Dell Perccli.rpm to fileservers
+  copy: src=files/perccli-1.11.03-1.noarch.rpm dest=/tmp
+
+- name: Install Dell perccli to fileserver
+  command: yum localinstall -y /tmp/perccli-1.11.03-1.noarch.rpm
+
