@@ -34,5 +34,5 @@
   - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: ansible-role-autofs, tags: [ 'autofs' ] }
-  - { role: local-customization, tags: ['local'] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
+  - { role: local-customization, tags: ['local'] }
