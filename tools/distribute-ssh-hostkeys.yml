@@ -1,0 +1,42 @@
+---
+# This playbook will copy files/nodes/ssh_known_hosts
+# from localhost to install:/var/www/html
+#
+# TODO: 
+#
+
+- hosts: localhost
+  vars:
+    - bckpDir: "backup"
+    - backup_dir: "/tmp/{{ bckpDir }}"
+
+  # Ensure ssh-keys 
+  tasks: 
+    - name: Copy nodes public_key to global ssh_known_hosts
+      known_hosts: path='files/nodes/ssh_known_hosts'
+               name='{{ item }}'
+               key="{{ item }} {{ lookup('file', '../files/nodes/' + item + '/ssh/ssh_host_ed25519_key.pub') }}"
+      delegate_to: localhost
+      with_items: "{{ groups.compute }}"
+
+    - name: write ed25519 pub keys into a known_hosts ip
+      known_hosts: path='files/nodes/ssh_known_hosts'
+               name='{{ hostvars[item].int_ip_addr }}'
+               key="{{ hostvars[item].int_ip_addr }} {{ lookup('file', '../files/nodes/' + item + '/ssh/ssh_host_ed25519_key.pub') }}"
+      delegate_to: localhost
+      with_items: "{{ groups.compute }}"
+
+- hosts: install
+  tasks:
+    - name: Distribute global ssh_known_hosts
+      copy: src=files/nodes/ssh_known_hosts dest=/var/www/html 
+               mode=0644 backup=yes
+
+- hosts: install,login
+  tasks:
+    - name: copy the known_hosts files to the install node /etc/ssh/
+      copy: src=files/nodes/ssh_known_hosts 
+               dest=/etc/ssh/ssh_known_hosts 
+               owner=root group=root mode=0644 backup=yes
+
+

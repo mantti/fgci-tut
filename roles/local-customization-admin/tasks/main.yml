@@ -20,6 +20,10 @@
   tags: admin
   copy: src=library.exp dest=/usr/local/sbin
 
+- name: Copy Dell Perccli.rpm to fileservers
+  tags: admin,mgmt
+  copy: src=files/dell-dset-lx64-3.7.0.219.bin dest=/root/Dell
+
 - name: populate /etc/hosts file with mgmt-addresses
   lineinfile: 
         dest=/etc/hosts 
