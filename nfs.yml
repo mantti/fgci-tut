@@ -13,6 +13,7 @@
 
   roles: 
   - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
   - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: ansible-role-ferm-firewall, tags: [ 'firewall', 'network' ] }
@@ -31,8 +32,9 @@
   - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
+  - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
+  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
   - { role: local-customization, tags: ['local'] }
-  - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
 
 - name: Mount /home and /scratch on Install Node
   hosts: install

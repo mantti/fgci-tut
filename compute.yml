@@ -11,10 +11,24 @@
   remote_user: root
   become: yes
 
+  pre_tasks:
+    - name: set cron interval for ansible-pull
+      cron: name='ansible-pull' user=root
+            job='/bin/bash /usr/local/bin/ansible-pull-script.sh >/var/log/ansible.log 2>&1'
+            minute="{{ansible_pull_cron_minute_interval | default('0')}}"
+            hour="{{ansible_pull_cron_hour_interval | default('*/2')}}"
+            day="{{ansible_pull_cron_day_interval | default('*')}}"
+            month="{{ansible_pull_cron_month_interval | default('*')}}"
+            weekday="{{ansible_pull_cron_weekday_interval | default('*')}}"
+            cron_file=ansible-pull
+            state={{ansible_pull_cron_state | default('present')}}
+      tags: pull
+
   roles: 
   - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
   - { role: ansible-role-ntp, tags: [ 'ntp' ] }
   - { role: ansible-role-autofs, tags: [ 'autofs' ] }
   - { role: ansible-role-nis, tags: [ 'nis' ] }
@@ -41,8 +55,9 @@
   - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
   - { role: ansible-role-serial-console, tags: [ 'serial', 'console' ] }
   - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
-  - { role: local-customization, tags: ['local'] }
+  - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
+  - { role: local-customization, tags: ['local'] }
 
 # Adding a role here? Make sure to add it to local.yml too for the role to be used with ansible-pull
 
