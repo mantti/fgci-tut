@@ -44,6 +44,8 @@
                 dest: "{{ host_vars_dest }}" 
                 owner: no 
                 group: no
+                rsync_opts:
+                 - '--exclude=*.swp'
   when: ansible_virtualization_type != "docker" and reg_host_vars_src.stat.exists
 
 - name: template the ansible-pull-script.sh to /var/www/html - for ansible-pull
