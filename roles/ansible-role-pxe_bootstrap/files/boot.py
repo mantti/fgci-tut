@@ -15,6 +15,7 @@ if "gPXE" in os.environ["HTTP_USER_AGENT"]:
 def pxe_abort():
   """Abort the PXE boot, continue with the next boot device in the BIOS boot order"""
   print pxe_header
+  print "echo"
   print "echo No reinstall requested - Aborting"
   print "exit"
   sys.exit(0)
