@@ -41,5 +41,7 @@
 
 - name: Set admin-home as default homepage for firefox
   tags: admin
-  copy: src=files/mozilla.cfg dest=/usr/lib64/firefox/
+  lineinfile: dest=/usr/lib64/firefox/defaults/preferences/all-redhat.js regexp='^pref\("browser.startup.homepage"' 
+         line='pref("browser.startup.homepage",            "data:text/plain,browser.startup.homepage=file:///usr/local/admin-home.html");'
+#  copy: src=files/mozilla.cfg dest=/usr/lib64/firefox/
 
