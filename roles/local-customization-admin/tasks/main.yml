@@ -35,3 +35,11 @@
 # groups.production
   tags: local,mgmt
 
+- name: Copy admin-www-home to admin-node
+  tags: admin
+  copy: src=files/admin-home.html dest=/usr/local
+
+- name: Set admin-home as default homepage for firefox
+  tags: admin
+  copy: src=files/mozilla.cfg dest=/usr/lib64/firefox/
+
