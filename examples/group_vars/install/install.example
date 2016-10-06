@@ -6,6 +6,8 @@ internal_interface: "eth1"
 
 admingroup: "admin"
 
+network_scheduler: "fq_codel"
+
 network_ether_interfaces:
   - device: "{{external_interface}}"
     bootproto: "static"
@@ -31,6 +33,9 @@ network_ether_interfaces:
     type: "Ethernet"
 
 nfs_mount_addr: "10.1.1.5"
+
+# See examples/hosts-example for an ansible group showing how one can add an extra group of hosts to the DNS (/etc/hosts & dnsmasq on install node)
+#hosts_file_extra_group_to_populate: "{{ groups.switches }}"
 
 ## DHCP_SERVER
 
@@ -124,3 +129,8 @@ ferm_rules_extra:
    domains: [ip]
    rules:
      - {rule: "outerface {{ external_interface }} saddr ( {{ internal_net }} ) mod comment comment 'masquerade for internal net' MASQUERADE;", comment: "masquerade"}
+
+# NTP/chrony server
+chrony_allow_deny:
+ - "allow {{ internal_net }}"
+

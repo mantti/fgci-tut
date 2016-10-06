@@ -44,9 +44,9 @@ infiniband_available: False
 # NFS mounts
 
 nfs_mount_addr: "10.2.1.5"
-nfs_mount: |
-  {{ nfs_mount_addr }}:/scratch /scratch nfs4 defaults 0 0
-  {{ nfs_mount_addr }}:/home /home nfs4 defaults 0 0
+nfs_mounts:
+ - { fstype: "nfs4", name: "/scratch", src: "{{ nfs_mount_addr }}:/scratch" }
+ - { fstype: "nfs4", name: "/home", src: "{{ nfs_mount_addr }}:/home", state: "mounted", opts: "defaults" }
 
 repo_location: "http://www.nic.funet.fi/pub/mirrors/centos.org/7/os/x86_64/"
 repos:
@@ -120,6 +120,15 @@ sshd:
 
 #NTP
 ntp_config_server: [ 0.fi.pool.ntp.org, 1.fi.pool.ntp.org, 2.fi.pool.ntp.org, 3.fi.pool.ntp.org, ntp2.funet.fi, ntp4.funet.fi]
+#Chrony
+chrony_ntp_servers: "{{ ntp_config_server }}"
+chrony_pkg_state: "installed"
+chrony_pkg_update_cache: "no"
+chrony_remove_ntp: True
+# We make chronyd not act as a server by default by not allowing any subnets
+chrony_allow_deny:
+  - ""
+
 
 #Users
 adminremove_passwords: True
@@ -155,6 +164,12 @@ ansible_pull_cron_hour_interval: "*/2"
 ansible_pull_branch: "master"
 # Set the ansible_pull_cron_state to absent to disable the ansible-pull cronjob
 ansible_pull_cron_state: present
+# Store ansible-pull logs longer than just the last run
+ansible_pull_log: True
+ansible_pull_logrotate: True
+ansible_pull_logrotate_interval: daily
+ansible_pull_logrotate_rotate: 16
+
 # Only install these on the admin node
 dell_install_helper_scripts: False
 

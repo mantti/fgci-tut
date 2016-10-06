@@ -17,6 +17,7 @@
   - { role: ansible-role-ferm-firewall, tags: [ 'firewall', 'network' ] }
   - { role: ansible-role-fail2ban, tags: [ 'firewall', 'fail2ban', 'network' ] }
   - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
   - { role: ip_forwarder, tags: [ 'network' ], 
     when: internal_interface is defined and
           external_interface is defined and
@@ -24,7 +25,7 @@
           internal_interface in ansible_interfaces and
           external_interface in ansible_interfaces }
   - { role: dns, tags: [ 'dns' ] }
-  - { role: ansible-role-ntp, tags: [ 'ntp'] }
+  - { role: ansible-role-chrony, tags: [ 'ntp', 'chrony'] }
   - { role: ansible-role-nis, tags: [ 'nis' ] }
   - { role: ansible-role-adauth, tags: [ 'auth' ] }
   - { role: ansible-role-pam, tags: [ 'auth', 'pam' ] }
@@ -51,5 +52,6 @@
   - { role: ansible-role-sshd-host-keys, tags: [ 'sshd', 'ssh', 'host-keys' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: local-customization, tags: ['local'] }
-  - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
+  - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
+  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
