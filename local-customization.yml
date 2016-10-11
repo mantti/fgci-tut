@@ -17,3 +17,7 @@
 - hosts: nfs
   roles:
   - local-customization-nfs
+
+- hosts: compute
+  roles:
+  - local-customization-compute
