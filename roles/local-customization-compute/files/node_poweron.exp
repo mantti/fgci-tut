@@ -1,0 +1,29 @@
+#!/usr/bin/expect --
+
+source [file join [file dirname [info script]] library.exp]
+if {[llength $argv] == 0} {
+	puts "usage: poweron.exc {#}"
+	puts "		Will press virtual powerbutton to turn the machine on"
+	exit 1
+}
+
+ssh_connect $argv
+
+send "\r"
+
+expect {
+	"*</>hpiLO-> " {
+		send "power on\r"
+	}
+	"*/admin1->" {
+		send "start /system1\r"
+	}
+}
+
+expect {
+	"*</>hpiLO-> " {}
+	"*/admin1->" {}
+}
+send "exit\r"
+
+

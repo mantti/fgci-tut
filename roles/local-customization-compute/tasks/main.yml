@@ -1,0 +1,6 @@
+---
+# Tasks for compute-node
+- name: Copy new BIOS upgrade to /tmp
+  tags: firmware
+  copy: src=files/Dell/BIOS_15N9M_LN_2.2.5.BIN mode=0755 dest=/tmp
+  notify: Install update
