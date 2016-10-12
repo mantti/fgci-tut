@@ -1,4 +1,11 @@
 - name: Install update
   tags: firmware
-  command: /tmp/BIOS_15N9M_LN_2.2.5.BIN -q
+  shell: /tmp/{{ bios_update_name }} -q
+  register: bios_updated
+  failed_when: > 
+    bios_updated.rc != 2 and ("same as the currently installed" not in bios_updated.stdout)
+  changed_when: bios_updated.rc == 2 
+  notify: Remove temporary update file
 
+- name: Remove temporary update file
+  file: name=/tmp/{{ bios_update_name }} state=absent
