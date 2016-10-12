@@ -5,6 +5,7 @@
 - hosts: all
   roles:
   - local-customization
+  - { role: local-bios-updates, when: ansible_virtualization_role == 'host' }
 
 - hosts: admin
   roles: 
@@ -18,6 +19,6 @@
   roles:
   - local-customization-nfs
 
-- hosts: compute
-  roles:
-  - local-customization-compute
+#- hosts: compute
+#  roles:
+#  - local-customization-compute

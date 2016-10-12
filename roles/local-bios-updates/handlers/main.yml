@@ -1,0 +1,7 @@
+- name: Remove temporary bios update file
+  file: name=/tmp/{{ bios_update_name }} state=absent
+
+- name: Request Reboot
+  command: /usr/bin/scontrol update nodename={{ ansible_hostname }} state=drain reason=reboot
+  delegate_to: install
+

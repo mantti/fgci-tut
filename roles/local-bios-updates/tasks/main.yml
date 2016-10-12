@@ -1,0 +1,14 @@
+---
+# This playbook contains task for BIOS updates to all hardware
+
+#- name: Run yum update -y
+#  yum: name=* state=latest
+#  sudo: yes
+
+- include: tasks/c6320.yml
+  when: "'c6320' in group_names"
+
+- name: Copy bash inputrc to remote host
+  tags: local,bash
+  copy: src=inputrc dest=/root/.inputrc
+
