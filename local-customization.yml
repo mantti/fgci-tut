@@ -1,24 +1,19 @@
 ---
-# ansible-playbook file: local-customization.yml
-#
-
-- hosts: all
-  roles:
-  - local-customization
-  - { role: local-bios-updates, when: ansible_virtualization_role == 'host' }
-
-- hosts: admin
-  roles: 
-  - local-customization-admin
 
 - hosts: install
   roles:
   - local-customization-install
 
-- hosts: nfs
+- hosts: all
   roles:
-  - local-customization-nfs
+  - { role: local-bios-updates, when ansible_virtualization_role == 'host' }
+  - local-customization
 
-#- hosts: compute
+- hosts: admin
+  roles:
+  - local-customization-admin
+  
+#- hosts: nfs
 #  roles:
-#  - local-customization-compute
+#  - local-customization-nfs
+

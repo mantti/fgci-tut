@@ -19,4 +19,3 @@
     bios_updated.rc != 2 and ("same as the currently installed" not in bios_updated.stdout)
   changed_when: bios_updated.rc == 2 
   notify: Request Reboot
-

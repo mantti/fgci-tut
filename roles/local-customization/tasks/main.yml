@@ -7,7 +7,15 @@
 
 - name: Copy bash inputrc to remote host
   tags: local,bash
-  copy: src=inputrc dest=/root/.inputrc
+  copy: src=files/inputrc dest=/root/.inputrc
+
+- name: Set current LC_CTYPE 
+  tags: local,bash
+  lineinfile:
+     dest=/root/.bashrc 
+     line='export LC_CTYPE=en_DK.iso88591'
+     state=present
+     regexp='.*LC_CTYPE=.*'
 
 # install some "missing" packages
 - include: RedHat.yml
