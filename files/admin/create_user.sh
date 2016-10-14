@@ -1,5 +1,6 @@
 #!/bin/sh
 
+LDAPKEY=/usr/local/etc/ldap.key
 LOGFILE=/var/log/user_accounts.log
 LOCALUIDRANGE="-K UID_MIN=60000 -K UID_MAX=60100"
 #MAIL_TEMPLATE=/usr/local/etc/merope-useraccount-draft.txt
@@ -50,7 +51,7 @@ echo "`date +"%Y-%m-%d %T"`: Adding user account $1 by $USER" | sudo tee -a ${LO
 
 # search given uid from ldap
 #LDAP=$(ldapsearch -L -x -H ldap://ldap.tut.fi -b ou=people,o=tut.fi -S uid "(uid=$1)" cn mail departmentNumber)
-LDAP=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y /etc/ldap.key -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$1)" cn mail departmentNumber uidNumber gidNumber)
+LDAP=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$1)" cn mail departmentNumber uidNumber gidNumber)
 # Parsing results
 CN=`echo "${LDAP}" | awk '/^cn:/{print $2 " " $3}'`
 MAIL=`echo "${LDAP}" | awk '/^mail:/{print $2}'`
@@ -122,13 +123,13 @@ echo "Using CN: ${MYCN}"
 TMPDIR=$(mktemp -d)
 
 case "$DEP" in
-	812*)
-		MYHOME=/sgn/$1
-		MYGROUPS="-G sgn"
-		;;
-	611*)
-		MYHOME=/fys/$1
-		;;
+#	812*)
+#		MYHOME=/sgn/$1
+#		MYGROUPS="-G sgn"
+#		;;
+#	611*)
+#		MYHOME=/fys/$1
+#		;;
 	*)	
 		MYHOME=/home/$1
 		;;

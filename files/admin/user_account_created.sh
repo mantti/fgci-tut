@@ -1,6 +1,6 @@
 #!/bin/sh
 LOGFILE=/var/log/user_accounts.log
-MAIL_TEMPLATE=/usr/local/etc/merope-useraccount-draft.txt
+MAIL_TEMPLATE=/usr/local/etc/tcsc-useraccount-draft.txt
 
 usage () {
 	echo USAGE: $0 username 
