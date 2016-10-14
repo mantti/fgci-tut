@@ -1,0 +1,23 @@
+---
+# tasks file for ansible-role-postfix
+#
+- name: make sure postfix is installed
+  tags: postfix
+  action: >
+    {{ ansible_pkg_mgr }}
+    name=postfix
+    state=installed
+
+- name: Lets listen to internal interface
+  tags: postfix
+  lineinfile: dest=/etc/postfix/main.cf 
+              line="inet_interfaces = localhost, {{ int_ip_addr }}" 
+              backup=yes 
+              regexp="^inet_interfaces =.*$"
+              state=present
+  #when: postfix_relayhost == "{{ inventory_hostname }}" 
+  notify:
+    - reload postfix
+
+# inet_interfaces = localhost
+

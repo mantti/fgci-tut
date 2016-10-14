@@ -13,6 +13,10 @@
   roles:
   - local-customization-admin
   
+- hosts: login
+  roles:
+  - local-customization-login
+
 #- hosts: nfs
 #  roles:
 #  - local-customization-nfs
