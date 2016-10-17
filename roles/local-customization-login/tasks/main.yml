@@ -15,6 +15,17 @@
               backup=yes 
               regexp="^inet_interfaces =.*$"
               state=present
+  notify:
+    - reload postfix
+
+- name: Lets masquerade mail from internal hosts
+  tags: postfix
+  lineinfile: dest=/etc/postfix/main.cf
+              line="masquerade_domains = {{ intDomain }}, localdomain"
+              backup=yes 
+              regexp="^masquerade =.*$"
+              state=present
+
   #when: postfix_relayhost == "{{ inventory_hostname }}" 
   notify:
     - reload postfix
