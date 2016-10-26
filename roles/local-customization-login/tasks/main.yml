@@ -8,6 +8,14 @@
     name=postfix
     state=installed
 
+- name: Lets tag main.cf to ansible
+  tags: postfix
+  lineinfile: dest=/etc/postfix/main.cf
+              line="# This file is {{ ansible_managed }} "
+              state=present
+              regexp="^# This file is .*$"
+              backup=yes
+
 - name: Lets listen to internal interface
   tags: postfix
   lineinfile: dest=/etc/postfix/main.cf 

@@ -51,13 +51,16 @@ echo "`date +"%Y-%m-%d %T"`: Adding user account $1 by $USER" | sudo tee -a ${LO
 
 # search given uid from ldap
 #LDAP=$(ldapsearch -L -x -H ldap://ldap.tut.fi -b ou=people,o=tut.fi -S uid "(uid=$1)" cn mail departmentNumber)
-LDAP=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$1)" cn mail departmentNumber uidNumber gidNumber)
+LDAP=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$1)" cn mail departmentNumber uidNumber gidNumber host)
 # Parsing results
 CN=`echo "${LDAP}" | awk '/^cn:/{print $2 " " $3}'`
 MAIL=`echo "${LDAP}" | awk '/^mail:/{print $2}'`
 UIDNUMBER=`echo "${LDAP}" | awk '/^uidNumber:/{print $2}'`
 GIDNUMBER=`echo "${LDAP}" | awk '/^gidNumber:/{print $2}'`
+# Will use the first departmentnumber from ldap
 DEP=`echo "${LDAP}" | awk '/^departmentNumber:/{print $2}'|head -n1`
+# Array of hosts ( not used anywhere yet)
+HOSTS=(`echo "${LDAP}" | awk '/^host:/{print $2}'`)
 #MYCN=$(echo "$CN" | base64 --decode 2>/dev/null)
 
 # Let's check if cn is base64 encoded
@@ -119,9 +122,11 @@ echo "MAIL=${MAIL}"
 echo "DEP=${DEP}"
 echo "MYCN=${MYCN}"
 echo "Using CN: ${MYCN}"
+echo "Using HOSTS: ${HOSTS}"
 
 TMPDIR=$(mktemp -d)
 
+# All userhomes goto /home by default
 case "$DEP" in
 #	812*)
 #		MYHOME=/sgn/$1
@@ -138,6 +143,19 @@ esac
 echo "`date +"%Y-%m-%d %T"`: Gonna create usergroup $1:$GIDNUMBER" | sudo tee -a ${LOGFILE}
 
 sudo groupadd -g $GIDNUMBER $1
+
+echo "`date +"%Y-%m-%d %T"`: Gonna create userhome $MYHOME ($1:$GIDNUMBER)" | sudo tee -a ${LOGFILE}
+
+if [ ! -d $MYHOME ]
+then 
+	sudo mkdir -m 0770 $MYHOME 
+	# Because useradd wont copy etc/skeleton to already existing path
+	find /etc/skel -mindepth 1 |xargs -n 16 -Imopo sudo cp mopo $MYHOME
+	sudo chown -R $1:$GIDNUMBER $MYHOME 
+else 
+    echo "`date +"%Y-%m-%d %T"`: Directory $MYHOME  already exists, aborting!" | sudo tee -a ${LOGFILE}
+	exit 666
+fi
 
 echo "`date +"%Y-%m-%d %T"`: Gonna create user $1:$UIDNUMBER:$GIDNUMBER [$MYCN $DEP] with home directory $MYHOME" | sudo tee -a ${LOGFILE}
 
@@ -164,6 +182,6 @@ then
 	/usr/local/sbin/add-sshkey.sh $1 $2
 # otherwise let's send instructions to key generation
 else
-	/usr/local/sbin/user_account_created.sh $1
+	echo Not running /usr/local/sbin/user_account_created.sh $1
 fi
 

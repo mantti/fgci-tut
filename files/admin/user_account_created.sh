@@ -35,7 +35,7 @@ fi
 sed -e "s/__CN__/$MYCN/" -e "s/__MAIL__/$MAIL/" -e "s/__UID__/$1/" < ${MAIL_TEMPLATE} > ${TMPDIR}/mail-template-$1.txt
 #echo .| mutt -x -e 'set record=""' -H ${TMPDIR}/mail-template-$1.txt ${MAIL}
 #env MAILRC=/dev/null mailx -a ${TMPDIR}/mail-template-${1}.txt -n -s "Your account (${1}) to merope-cluster ..." -r "TCSC <tcsc@tut.fi>" ${MAIL}
-env MAILRC=/dev/null mailx -n -s "Your account (${1}) to merope-cluster ..." -t -r "TCSC <tcsc@tut.fi>" ${MAIL} < ${TMPDIR}/mail-template-${1}.txt
+env MAILRC=/dev/null mailx -n -s "Your account (${1}) to narvi-cluster ..." -t -r "TCSC <tcsc@tut.fi>" ${MAIL} < ${TMPDIR}/mail-template-${1}.txt
 
 #echo Core dumped to ${TMPDIR}/mail-template-$1.txt
 rm -rf ${TMPDIR}

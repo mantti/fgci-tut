@@ -1,9 +1,10 @@
 #!/bin/sh
 
-MAIL_TEMPLATE=/usr/local/etc/merope-useraccount_ready.txt
+MAIL_TEMPLATE=/usr/local/etc/tcsc-useraccount_ready.txt
 LOGFILE=/var/log/user_accounts.log
-MYCN=`getent passwd $USER|cut -d: -f 5|cut -d, -f 1`
-MAIL=`getent passwd $USER|cut -d: -f 5|cut -d, -f 2`
+MYCN=`getent passwd $1|cut -d: -f 5|cut -d, -f 1`
+MAIL=`getent passwd $1|cut -d: -f 5|cut -d, -f 2`
+ADMIN=`grep $USER /etc/passwd|cut -d: -f5|cut -d, -f1`
 TMPDIR=$(mktemp -d)
 
 usage () {
@@ -48,9 +49,9 @@ fi
 echo "`date +"%Y-%m-%d %T"`: Adding ssh-key from $2 to $1 by $USER" | sudo tee -a ${LOGFILE}
 if [[ `getent passwd $1` ]] 
 then 
-	USER=$1
-	NEWHOME=`getent passwd $USER|cut -d: -f6`
-	ID=`getent passwd $USER|cut -d: -f3,4`
+	MYUSER=$1
+	NEWHOME=`getent passwd $MYUSER|cut -d: -f6`
+	ID=`getent passwd $MYUSER|cut -d: -f3,4`
 else
 	echo
 	echo "`date +"%Y-%m-%d %T"`: !! User $1 didn't exist in yp, aborting !!" | sudo tee -a ${LOGFILE}
@@ -138,19 +139,20 @@ then
 	sudo chown -R ${ID} ${NEWHOME}
 fi
 
-MAIL=`awk -F , '/'^${USER}:'/ {print $2}'  /etc/passwd`
+#MAIL=`awk -F , '/'^${MYUSER}:'/ {print $2}'  /etc/passwd`
 
 #set -x 
 
-echo Adding address ${MAIL}  to merope-users mailing list
-/usr/local/sbin/add-to-mailing-list.sh ${MAIL}
+#echo Adding address ${MAIL}  to merope-users mailing list
+#/usr/local/sbin/add-to-mailing-list.sh ${MAIL}
 
-echo Adding user ${USER} to slurm local user group
+echo Adding user ${MYUSER} to slurm local user group
 #sudo sacctmgr -i add user name=${USER} account=local MaxJobs=128 GrpCPUs=128
-sudo sacctmgr -i add user name=${USER} account=local
+sudo sacctmgr -i add user name=${MYUSER} account=local
 
 echo "`date +"%Y-%m-%d %T"`: Sending notification \($MAIL_TEMPLATE\) of added ssh-key to ${MAIL}" | sudo tee -a ${LOGFILE}
-sed -e "s/__CN__/$MYCN/" -e "s/__MAIL__/$MAIL/" -e "s/__UID__/$USER/" < ${MAIL_TEMPLATE} > ${TMPDIR}/mail-template-$USER.txt
-echo .^M| mutt -e 'set copy=no' -x -H ${TMPDIR}/mail-template-$USER.txt ${MAIL}
-rm -rf ${TMPDIR}
+sed -e "s/__CN__/$MYCN/" -e "s/__MAIL__/$MAIL/" -e "s/__UID__/$MYUSER/" -e "s/__ADMIN__/$ADMIN/" ${MAIL_TEMPLATE} ~$USER/.signature > ${TMPDIR}/mail-template-$MYUSER.txt
+#echo .^M| mutt -e 'set copy=no' -x -H ${TMPDIR}/mail-template-$MYUSER.txt ${MAIL}
+env MAILRC=/dev/null mailx -n -s "Your account (${1}) to narvi-cluster ..." -t -r "TCSC <tcsc@tut.fi>" ${MAIL} < ${TMPDIR}/mail-template-$MYUSER.txt
+#rm -rf ${TMPDIR}
 
