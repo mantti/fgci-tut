@@ -23,6 +23,7 @@
   with_items:
     - ldap.key
     - tcsc-useraccount-draft.txt
+    - tcsc-useraccount_ready.txt
 
 - name: fetch the generated rsa-key-public to localhost
   tags: admin
