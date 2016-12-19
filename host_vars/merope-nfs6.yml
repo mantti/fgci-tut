@@ -1,4 +1,4 @@
-nfs_exports: []
+nfs_exports: { "/bmt-data 10.0.0.0/8(rw,sync,no_root_squash)" }
 internal_interface: "em3"
 ib_interface: "ib0"
 # We have different size of root disks, so we need different partitioning (2X300G RAID1)
