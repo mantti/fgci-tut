@@ -34,3 +34,12 @@
 #  template: src=hosts.local.j2 dest=/etc/hosts.local owner=root group=admin mode=0644
 #  with_items: groups.compute
 
+
+- name: create directory for ansible custom facts
+  file: state=directory recurse=yes path=/etc/ansible/facts.d
+
+- name: find ib firmware version for ansible
+  shell:
+
+- name: re-read facts after adding custom fact
+  setup: filter=ansible_local

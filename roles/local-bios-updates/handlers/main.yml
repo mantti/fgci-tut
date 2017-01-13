@@ -1,7 +1,11 @@
 - name: Remove temporary bios update file
-  file: name=/tmp/{{ bios_update_name }} state=absent
+  file: name=/tmp/{{ bios_newest_name }} state=absent
+
+- name: Remove temporary fw update file
+  file: name=/tmp/{{ ib_firmware_newest_name }} state=absent
 
 - name: Request Reboot
   command: /usr/bin/scontrol update nodename={{ ansible_hostname }} state=drain reason=reboot
-  delegate_to: install
+#  delegate_to: install
+  when: ( "'compute' in group_names" or "'merope-compute' in group_names" )
 

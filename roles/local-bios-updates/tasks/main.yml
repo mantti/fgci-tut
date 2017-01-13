@@ -5,10 +5,19 @@
 #  yum: name=* state=latest
 #  sudo: yes
 
-- include: tasks/c6320.yml
-  when: "'c6320' in group_names"
+- include: tasks/dell.yml
+  when: ( "{{ ansible_system_vendor }}" == "Dell Inc." )
 
-- name: Copy bash inputrc to remote host
-  tags: local,bash
-  copy: src=inputrc dest=/root/.inputrc
+- include: tasks/hp.yml
+  when: ( "{{ ansible_system_vendor }}" == "HP" )
+
+#- include: tasks/c6320.yml
+#  when: "'c6320' in group_names"
+
+#- include: tasks/r730.yml
+#  when: "'r730' in group_names"
+
+#- name: Copy bash inputrc to remote host
+#  tags: local,bash
+#  copy: src=inputrc dest=/root/.inputrc
 
