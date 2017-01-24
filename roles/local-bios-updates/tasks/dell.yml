@@ -1,5 +1,11 @@
 ---
 
+# Let's find out model
+- name: Registering HW model of Dell
+  shell: /usr/sbin/dmidecode -s system-product-name| cut -d " " -f2
+  register: Dell_model
+- debug: var=Dell_model
+
 # BIOS updates for Dell HW
 
 - name: Copy new BIOS update to /tmp
@@ -46,4 +52,23 @@
     fw_updated.rc != 0 and ("The new FW version is the same as the current FW version on flash." not in fw_updated.stdout)
   changed_when: fw_updated.rc == 0 
   notify: Request Reboot
+
+- name: Check current iDRAC version
+  tags: idrac
+  script: files/check_idrac_version.sh
+  register: idrac_version
+
+- name: Copy new idrac FW to /tmp
+  tags: idrac
+  copy: src=Dell/{{ idrac_newest_name }} mode=0755 dest=/tmp
+  register: idrac_update_needed
+  when: idrac_version.stdout | version_compare ( "{{ idrac_newest_version }}", "<" )
+  notify: Remove temporary idrac update file
+
+- name: Install iDRAC FW update
+  tags: idrac
+  shell: /tmp/{{ idrac_newest_name }} -q
+  register: idrac_updated
+  when: idrac_update_needed.changed
+  changed_when: idrac_updated.rc == 0 
 

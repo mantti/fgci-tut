@@ -4,6 +4,9 @@
 - name: Remove temporary fw update file
   file: name=/tmp/{{ ib_firmware_newest_name }} state=absent
 
+- name: Remove temporary idrac update file
+  file: name=/tmp/{{ ib_firmware_newest_name }} state=absent
+
 - name: Request Reboot
   command: /usr/bin/scontrol update nodename={{ ansible_hostname }} state=drain reason=reboot
 #  delegate_to: install
