@@ -1,5 +1,5 @@
 - name: Remove temporary bios update file
-  file: name=/tmp/{{ bios_newest_name }} state=absent
+  file: name=/tmp/usr state=absent
 
 - name: Remove temporary fw update file
   file: name=/tmp/{{ ib_firmware_newest_name }} state=absent

@@ -1,0 +1,8 @@
+- name: reload serial-console@ttyS0
+  systemd: 
+    daemon_reload: yes
+    name: serial-getty@ttyS0
+    enabled: yes
+    state: restarted
+  
+

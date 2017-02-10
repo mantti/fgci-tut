@@ -1,13 +1,14 @@
 ---
 
-- hosts: install
-  roles:
-  - local-customization-install
-
 - hosts: all
   roles:
   - { role: local-bios-updates, when ansible_virtualization_role == 'host' }
+  - { role: ansible-role-serial-console-root, when ansible_virtualization_role == 'host' }
   - local-customization
+
+- hosts: install
+  roles:
+  - local-customization-install
 
 - hosts: admin
   roles:
