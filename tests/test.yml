@@ -24,6 +24,25 @@
            port: 'ssh'
            logpath: '/var/log/secure'
            maxretry: '6'
+     - slurm_mysql_password: "changeme"
+     - slurm_munge_key_to_nfs: False
+     - slurm_compute_nodes: "{{ ansible_hostname }}"
+     - slurm_manage_sysctl: False
+     - nhc_short_hostname: False
+     - nhc_github: False
+     - nhc_use_default_checks: False
+     - nhc_rm: ""
+     - nhc_checks:
+       - { match: "*", name: "check_reboot_slurm", arguments: "" }
+     - slurm_plugstack: True
+     - fgci_slurmrepo_version: "fgcislurm1605"
+     - slurm_x11_spank: True
+     - adminusers:             
+       - { name: admin1, uid: 5001, state: "present", groups: "{{admingroup}}", shell: "{{adminshell}}", pubkey: "ssh-rsa admin1@KEY1" }
+       - { name: admin2, uid: 5002, state: "present", groups: "{{admingroup}}", shell: "{{adminshell}}", pubkey: "ssh-rsa admin2@KEY1" }
+       - { name: admin3, uid: 5003, state: "present", groups: "{{admingroup}}", shell: "{{adminshell}}", pubkey: "" }
+       - { name: admin4, uid: 5004, state: "absent", groups: "{{admingroup}}", shell: "{{adminshell}}", pubkey: "ssh-rsa admin4@KEY1" }
+
 
 # on docker there's no rsyslog by default and thus no /var/log/secure
    pre_tasks:
@@ -51,6 +70,7 @@
 #     - ansible-role-nfs
 #     - ansible-role-nfs_mount
      - ansible-role-nhc
+     - ansible-role-nhc-scripts
      - ansible-role-nis
 #     - ansible-role-ntp
      - ansible-role-postfix
@@ -58,12 +78,13 @@
 #     - ansible-role-pxe_config
      - ansible-role-rdma
      - ansible-role-rsyslog
-#     - ansible-role-slurm
+     - ansible-role-slurm
      - ansible-role-smartd
      - ansible-role-squid
      - ansible-role-sshd
      - ansible-role-sshd-host-keys
      - ansible-role-system-limits
+     - systemd_rpcbind
      - ansible-role-users
      - ansible-role-yum-cron-2
 #     - dns

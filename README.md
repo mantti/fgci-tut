@@ -5,7 +5,8 @@ Used in production in >9 uniform HPC clusters.
 
 <a href="https://research.csc.fi/fgci"><img src="meta/FGCI-logo.jpg"></a>
 
-[![Build Status](https://travis-ci.org/CSC-IT-Center-for-Science/fgci-ansible.svg?branch=master)](https://travis-ci.org/CSC-IT-Center-for-Science/fgci-ansible) [![Stories in Ready](https://badge.waffle.io/CSC-IT-Center-for-Science/fgci-ansible.png?label=ready&title=Ready)](https://waffle.io/CSC-IT-Center-for-Science/fgci-ansible)
+=======
+[Build Status](https://travis-ci.org/CSC-IT-Center-for-Science/fgci-ansible) [Backlog](https://waffle.io/CSC-IT-Center-for-Science/fgci-ansible)
 
 ## Physical Hardware:
  - The clusters are made with the same basic building blocks:
