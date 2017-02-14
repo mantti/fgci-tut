@@ -2,7 +2,7 @@
 
 - hosts: all
   roles:
-  - { role: local-bios-updates, when ansible_virtualization_role == 'host' }
+  - { role: ansible-role-firmware-updates, tags: [ 'bios', 'IB' ], when ansible_virtualization_role == 'host' }
   - { role: ansible-role-serial-console-root, when ansible_virtualization_role == 'host' }
   - local-customization
 
