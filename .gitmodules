@@ -1,3 +1,6 @@
 [submodule "roles/ansible-role-firmware-updates"]
 	path = roles/ansible-role-firmware-updates
 	url = git@github.com:mantti/ansible-role-firmware-updates.git
+[submodule "roles/ansible-role-serial-console-root"]
+	path = roles/ansible-role-serial-console-root
+	url = git@github.com:mantti/ansible-role-serial-console-root.git
