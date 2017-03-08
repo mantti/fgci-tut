@@ -17,6 +17,14 @@
      state=present
      regexp='.*LC_CTYPE=.*'
 
+- name: Let's check that /scratch is world-writable
+  tags: mount
+  file: 
+    path: "/scratch"
+    mode: 1777
+    state: directory
+  when: (inventory_hostname in groups.compute or inventory_hostname in groups.login)
+
 # install some "missing" packages
 - include: RedHat.yml
   when: ansible_os_family == 'RedHat'
@@ -35,11 +43,18 @@
 #  with_items: groups.compute
 
 
-- name: create directory for ansible custom facts
-  file: state=directory recurse=yes path=/etc/ansible/facts.d
+#- name: create directory for ansible custom facts
+#  file: state=directory recurse=yes path=/etc/ansible/facts.d
 
-- name: find ib firmware version for ansible
-  shell:
+#- name: find ib firmware version for ansible
+#  shell:
 
-- name: re-read facts after adding custom fact
-  setup: filter=ansible_local
+#- name: re-read facts after adding custom fact
+#  setup: filter=ansible_local
+
+- name: Add local modulepath to /etc/profile.d
+  tags: local
+  when: inventory_hostname in groups.compute
+  copy: src=files/tut-modules.sh dest=/etc/profile.d/tut-modules.sh
+
+

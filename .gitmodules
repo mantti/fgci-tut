@@ -4,3 +4,6 @@
 [submodule "roles/ansible-role-serial-console-root"]
 	path = roles/ansible-role-serial-console-root
 	url = git@github.com:mantti/ansible-role-serial-console-root.git
+[submodule "roles/local-customization-login"]
+	path = roles/local-customization-login
+	url = git@github.com:mantti/ansible-role-local-customization-login.git

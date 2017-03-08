@@ -20,7 +20,7 @@
   lineinfile: dest=/etc/postfix/main.cf 
               line="relayhost = {{ postfix_relayhost }}" 
               backup=yes 
-              regexp="^relayhost = .*$"
+              regexp="^relayhost = {{ postfix_relayhost }}$"
   when: postfix_relayhost != "" 
   notify:
     - reload postfix
