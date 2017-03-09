@@ -7,3 +7,6 @@
 [submodule "roles/local-customization-login"]
 	path = roles/local-customization-login
 	url = git@github.com:mantti/ansible-role-local-customization-login.git
+[submodule "roles/local-customization"]
+	path = roles/local-customization
+	url = git@github.com:mantti/ansible-role-local-customization.git
