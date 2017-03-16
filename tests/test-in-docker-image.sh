@@ -16,6 +16,11 @@ ANSIBLE_PLAYBOOk="tests/test.yml"
 ANSIBLE_LOG_LEVEL="-v"
 APACHE_CTL="apache2ctl"
 
+if [ "$OS_TYPE" == "latest" ]; then
+    echo "TEST: latest"
+    export LATEST=1
+fi
+
 # if there wasn't sudo then ansible couldn't use it
 if [ "x$SUDO" == "x" ];then
     SUDO_OPTION=""
@@ -91,9 +96,23 @@ function test_ansible_setup(){
 
 
 function test_install_requirements(){
-    echo "TEST: ansible-galaxy install -r requirements.yml --force"
+    if [ "$OS_TYPE" == "latest" ]; then
 
-    ansible-galaxy install -r requirements.yml --force ||(echo "requirements install failed" && exit 2 )
+      echo "TEST: grep -v version: requirements.yml > requirements2.yml"
+      grep -v version: requirements.yml > requirements2.yml
+      echo "TEST: grep -A4 ansible-role-users requirements2.yml"
+      grep -A4 ansible-role-users requirements2.yml
+
+      echo "TEST: ansible-galaxy install -r requirements2.yml --force"
+      ansible-galaxy install -r requirements2.yml --force ||(echo "requirements install failed" && exit 2 )
+
+    else
+      echo "TEST: grep -A4 ansible-role-users requirements.yml"
+      grep -A4 ansible-role-users requirements.yml
+
+      echo "TEST: ansible-galaxy install -r requirements.yml --force"
+      ansible-galaxy install -r requirements.yml --force ||(echo "requirements install failed" && exit 2 )
+    fi
 
 }
 
@@ -125,7 +144,7 @@ function extra_tests(){
 
 set -e
 function main(){
-    install_os_deps
+#    install_os_deps
 #    install_ansible_devel
     show_version
 #    tree_list

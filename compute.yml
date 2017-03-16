@@ -4,10 +4,12 @@
 # We need some facts from the install node, specifically to find address of slurm controller.
 - name: grab facts from install nodes
   hosts: production
+  strategy: free
   tasks: [ ]
 
 - name: Compute Nodes
   hosts: compute
+  strategy: free
   remote_user: root
   become: yes
 
@@ -59,6 +61,7 @@
   - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: systemd_rpcbind, tags: [ 'systemd', 'rpcbind' ] }
+  - { role: ansible-role-lldpd, tags: [ 'lldpd', 'lldp' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
   - { role: local-customization, tags: ['local'] }
 
@@ -66,6 +69,7 @@
 
 - name: GPU Nodes
   hosts: compute
+  strategy: free
   remote_user: root
   become: yes
 
