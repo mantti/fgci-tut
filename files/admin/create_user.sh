@@ -27,6 +27,7 @@ Ask_User_Info () {
 	read -e -p "Give users name (e.g. Matti Virtanen):" MYCN
 	read -e -p "Give users email address (e.g. pertti.peruskayttaja@gmail.com):" MAIL
 	read -e -p "Give users organization (e.g. BioMeditech):" DEP
+	read -e -p "Give supervisors email-address (e.g. Users@tut.fi):" MANAGER
 }
 
 if [ "$UID" = "0" ] 
@@ -51,7 +52,7 @@ echo "`date +"%Y-%m-%d %T"`: Adding user account $1 by $USER" | sudo tee -a ${LO
 
 # search given uid from ldap
 #LDAP=$(ldapsearch -L -x -H ldap://ldap.tut.fi -b ou=people,o=tut.fi -S uid "(uid=$1)" cn mail departmentNumber)
-LDAP=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$1)" cn mail departmentNumber uidNumber gidNumber host)
+LDAP=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$1)" cn mail departmentNumber uidNumber gidNumber host manager)
 # Parsing results
 CN=`echo "${LDAP}" | awk '/^cn:/{print $2 " " $3}'`
 MAIL=`echo "${LDAP}" | awk '/^mail:/{print $2}'`
@@ -61,7 +62,12 @@ GIDNUMBER=`echo "${LDAP}" | awk '/^gidNumber:/{print $2}'`
 DEP=`echo "${LDAP}" | awk '/^departmentNumber:/{print $2}'|head -n1`
 # Array of hosts ( not used anywhere yet)
 HOSTS=(`echo "${LDAP}" | awk '/^host:/{print $2}'`)
+#MANAGER=`echo "${LDAP}" | awk '/^manager:/{print $2}'`
+MANAGER=`echo $LDAP|awk '/manager: /{print gensub(/manager: uid=([a-z]*),.*/,"\\1","g")}'`
 #MYCN=$(echo "$CN" | base64 --decode 2>/dev/null)
+LDAP2=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$MANAGER)" mail )
+MANAGER=`echo $LDAP2|awk '/mail: /{print $2}'`
+# Parsing results
 
 # Let's check if cn is base64 encoded
 echo $CN | base64 --decode >/dev/null 2>&1 && MYCN=$(echo $CN|base64 --decode) || MYCN="$CN"
@@ -104,6 +110,12 @@ else
 		UIDPARAMETER="$UIDPARAMETER  -g $GIDNUMBER"
 	fi
 
+	if [ "$MANAGER" = "" ]
+	then
+		echo "No manager found from LDAP, please give email of supervisor"
+		read -e -i "@tut.fi" MANAGER
+	fi
+
 	echo "Found user $1 ($UIDNUMBER:$GIDNUMBER): ${MYCN}\<${MAIL}\> from department ${DEP}"
 	read -e -t 60 -p "Is that OK (Y/n):" -i "Y" OK
 
@@ -120,6 +132,7 @@ echo "UID=${UIDNUMBER}"
 echo "GID=${GIDNUMBER}"
 echo "MAIL=${MAIL}"
 echo "DEP=${DEP}"
+echo "MANAGER=${MANAGER}"
 echo "MYCN=${MYCN}"
 echo "Using CN: ${MYCN}"
 echo "Using HOSTS: ${HOSTS}"
@@ -148,7 +161,7 @@ echo "`date +"%Y-%m-%d %T"`: Gonna create userhome $MYHOME ($1:$GIDNUMBER)" | su
 
 if [ ! -d $MYHOME ]
 then 
-	sudo mkdir -m 0770 $MYHOME 
+	sudo mkdir -m 0700 $MYHOME 
 	# Because useradd wont copy etc/skeleton to already existing path
 	find /etc/skel -mindepth 1 |xargs -n 16 -Imopo sudo cp mopo $MYHOME
 	sudo chown -R $1:$GIDNUMBER $MYHOME 
@@ -159,7 +172,7 @@ fi
 
 echo "`date +"%Y-%m-%d %T"`: Gonna create user $1:$UIDNUMBER:$GIDNUMBER [$MYCN $DEP] with home directory $MYHOME" | sudo tee -a ${LOGFILE}
 
-sudo useradd -c "$MYCN,$MAIL,$DEP" ${UIDPARAMETER} -d $MYHOME -m $MYGROUPS $1
+sudo useradd -c "$MYCN,$MAIL,$DEP,$MANAGER" ${UIDPARAMETER} -d $MYHOME -m $MYGROUPS $1
 
 sudo make -C /var/yp
 
@@ -182,6 +195,7 @@ then
 	/usr/local/sbin/add-sshkey.sh $1 $2
 # otherwise let's send instructions to key generation
 else
-	echo Not running /usr/local/sbin/user_account_created.sh $1
+#echo Not running /usr/local/sbin/user_account_created.sh $1
+	/usr/local/sbin/user_account_created.sh $1
 fi
 
