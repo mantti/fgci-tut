@@ -3,9 +3,9 @@
 LDAPKEY=/usr/local/etc/ldap.key
 LOGFILE=/var/log/user_accounts.log
 LOCALUIDRANGE="-K UID_MIN=60000 -K UID_MAX=60100"
-#MAIL_TEMPLATE=/usr/local/etc/merope-useraccount-draft.txt
 # Setting locale for getting proper scandinavian characters
 LC_CTYPE=fi_FI.iso88591
+SLURM_ACCOUNTS=(TCSC FYS SGN BMT Students)
 
 usage () {
 	echo USAGE: $0 username [openssh public keyfile]
@@ -27,6 +27,13 @@ Ask_User_Info () {
 	read -e -p "Give users name (e.g. Matti Virtanen):" MYCN
 	read -e -p "Give users email address (e.g. pertti.peruskayttaja@gmail.com):" MAIL
 	read -e -p "Give users organization (e.g. BioMeditech):" DEP
+	echo "Select slurm account(=group) for user"
+	select MYACCOUNT in "${SLURM_ACCOUNTS[@]}"
+    do  
+        MY_SLURM_ACCOUNT=$MYACCOUNT
+        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOG_FILE}
+        break
+    done
 	read -e -p "Give supervisors email-address (e.g. Users@tut.fi):" MANAGER
 }
 
@@ -66,7 +73,7 @@ HOSTS=(`echo "${LDAP}" | awk '/^host:/{print $2}'`)
 MANAGER=`echo $LDAP|awk '/manager: /{print gensub(/manager: uid=([a-z]*),.*/,"\\1","g")}'`
 #MYCN=$(echo "$CN" | base64 --decode 2>/dev/null)
 LDAP2=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$MANAGER)" mail )
-MANAGER=`echo $LDAP2|awk '/mail: /{print $2}'`
+MANAGERMAIL=`echo $LDAP2|awk '/mail:/{print $2}'`
 # Parsing results
 
 # Let's check if cn is base64 encoded
@@ -110,13 +117,20 @@ else
 		UIDPARAMETER="$UIDPARAMETER  -g $GIDNUMBER"
 	fi
 
-	if [ "$MANAGER" = "" ]
+	if [ "$DEP" = "" ]
 	then
-		echo "No manager found from LDAP, please give email of supervisor"
-		read -e -i "@tut.fi" MANAGER
+		echo "Didn't found departmentnumber from LDAP, defaulting to Student?"
+		read -e -i "Student" DEP
+
 	fi
 
-	echo "Found user $1 ($UIDNUMBER:$GIDNUMBER): ${MYCN}\<${MAIL}\> from department ${DEP}"
+	if [ "$MANAGERMAIL" = "" ]
+	then
+		echo "No manager found from LDAP, please give email of supervisor"
+		read -e -i "@tut.fi" MANAGERMAIL
+	fi
+
+	echo "Found user $1 ($UIDNUMBER:$GIDNUMBER): ${MYCN}\<${MAIL}\> from department ${DEP} and manager ${MANAGERMAIL}"
 	read -e -t 60 -p "Is that OK (Y/n):" -i "Y" OK
 
 	if [ "$OK" != "Y" ] 
@@ -132,7 +146,7 @@ echo "UID=${UIDNUMBER}"
 echo "GID=${GIDNUMBER}"
 echo "MAIL=${MAIL}"
 echo "DEP=${DEP}"
-echo "MANAGER=${MANAGER}"
+echo "MANAGER=${MANAGERMAIL}"
 echo "MYCN=${MYCN}"
 echo "Using CN: ${MYCN}"
 echo "Using HOSTS: ${HOSTS}"
@@ -141,14 +155,23 @@ TMPDIR=$(mktemp -d)
 
 # All userhomes goto /home by default
 case "$DEP" in
-#	812*)
+	812*)
+		MY_SLURM_ACCOUNT="SGN"
 #		MYHOME=/sgn/$1
 #		MYGROUPS="-G sgn"
-#		;;
-#	611*)
+		;;
+	611*)
+		MY_SLURM_ACCOUNT="FYS"
 #		MYHOME=/fys/$1
-#		;;
+		;;
+	511*)
+		MY_SLURM_ACCOUNT="BMT"
+		;;
+	Student)
+		MY_SLURM_ACCOUNT="Student"
+		;;
 	*)	
+		MY_SLURM_ACCOUNT="TCSC"
 		MYHOME=/home/$1
 		;;
 esac
@@ -172,7 +195,7 @@ fi
 
 echo "`date +"%Y-%m-%d %T"`: Gonna create user $1:$UIDNUMBER:$GIDNUMBER [$MYCN $DEP] with home directory $MYHOME" | sudo tee -a ${LOGFILE}
 
-sudo useradd -c "$MYCN,$MAIL,$DEP,$MANAGER" ${UIDPARAMETER} -d $MYHOME -m $MYGROUPS $1
+sudo useradd -c "$MYCN,$MAIL,$DEP,$MANAGERMAIL" ${UIDPARAMETER} -d $MYHOME -m $MYGROUPS $1
 
 sudo make -C /var/yp
 
@@ -188,6 +211,27 @@ else
 fi
 
 sudo chown -R $ID ${MYHOME}
+
+echo "============================================="
+echo Defaulting to $MY_SLURM_ACCOUNT -slurm account. 
+echo "If you accept the default, please press enter in 10 seconds:"
+echo "============================================="
+
+read -e -t 10 -p ":" ACCOUNT_OK
+# The exit status is greater than 128 if this timeouts
+if [ "$?" -ge "128" ]
+then
+    echo "Please select the slurm account for user ${MYUSER}"
+    select MYACCOUNT in "${SLURM_ACCOUNTS[@]}"
+    do  
+        MY_SLURM_ACCOUNT=$MYACCOUNT
+        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOG_FILE}
+        break
+    done
+else
+    echo Accepted default slurm account $MY_SLURM_ACCOUNT | sudo tee -a ${LOG_FILE}
+fi
+
 
 # If we already have sshkey, so let's add it also
 if [ "$OPENSSH" != "NO" ]

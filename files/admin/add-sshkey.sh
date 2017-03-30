@@ -8,7 +8,6 @@ MAIL=`getent passwd $1|cut -d: -f 5|cut -d, -f 2`
 ADMIN=`grep $USER /etc/passwd|cut -d: -f5|cut -d, -f1`
 DEP=`getent passwd simona |cut -d: -f5|cut -d, -f3`
 TMPDIR=$(mktemp -d)
-SLURM_ACCOUNTS=(TCSC FYS SGN BMT Students)
 
 usage () {
 	echo USAGE: $0 username [openssh public keyfile]
@@ -166,30 +165,6 @@ case "$DEP" in
 		MY_SLURM_ACCOUNT="TCSC"
 		;;
 esac
-
-echo "============================================="
-echo Defaulting to $MY_SLURM_ACCOUNT -slurm account. 
-echo "If you accept the default, please press enter in 10 seconds:"
-echo "============================================="
-
-read -e -t 10 -p ":" ACCOUNT_OK
-# The exit status is greater than 128 if this timeouts
-if [ "$?" -ge "128" ]
-then
-    echo "Please select the slurm account for user ${MYUSER}"
-    select MYACCOUNT in "${SLURM_ACCOUNTS[@]}"
-    do  
-        MY_SLURM_ACCOUNT=$MYACCOUNT
-        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOG_FILE}
-        break
-    done
-else
-    echo Accepted default slurm account $MY_SLURM_ACCOUNT | sudo tee -a ${LOG_FILE}
-fi
-
-echo Adding user ${MYUSER} to slurm user group $MY_SLURM_ACCOUNT | sudo tee -a ${LOG_FILE}
-#sudo sacctmgr -i add user name=${USER} account=local MaxJobs=128 GrpCPUs=128
-sudo sacctmgr -i add user name=${MYUSER} account=$MY_SLURM_ACCOUNT
 
 echo "`date +"%Y-%m-%d %T"`: Sending notification \($MAIL_TEMPLATE\) of added ssh-key to ${MAIL}" | sudo tee -a ${LOGFILE}
 sed -e "s/__CN__/$MYCN/" -e "s/__MAIL__/$MAIL/" -e "s/__UID__/$MYUSER/" -e "s/__ADMIN__/$ADMIN/" ${MAIL_TEMPLATE} ~$USER/.signature > ${TMPDIR}/mail-template-$MYUSER.txt
