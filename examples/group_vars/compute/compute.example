@@ -21,6 +21,9 @@ network_ether_interfaces:
 
 infiniband_available: True
 rdma_configure_single_port: True
+# Stop and disable the subnetmanager on compute nodes
+rdma_opensm_state: "stopped"
+rdma_opensm_enabled: "no"
 
 networks:
   - "network --onboot=yes --bootproto=dhcp --device={{ internal_interface }} --noipv6"
@@ -39,6 +42,8 @@ nhc_github: False
 #nhc_checks:
 # - { match: "*", name: "check_reboot_slurm", arguments: "" }
 # - { match: "*", name: "check_file_test", arguments: "-r -s /cvmfs/fgi.csc.fi/README" }
+# - { match: '*', name: 'check_cmd_output', arguments: '-m "/Leap\ status\.*\:\ Normal/" /usr/bin/chronyc tracking' }
+
 
 # Run ansible-pull during kickstart
 ansible_pull_kickstart: true
@@ -115,7 +120,6 @@ kickstart_packages: |
   gcc-gfortran
   git
   glibc.i686
-  hdf5-openmpi
   @infiniband
   infiniband-diags
   iperf
@@ -127,14 +131,13 @@ kickstart_packages: |
   libstdc++.i686
   libxml2.i686
   mcelog
-  mpitests-openmpi
   netcdf
   nfs-utils
   nscd
   numpy
-  openmpi
   openssh-server
   perl-Filesys-Df
+  rsync
   subversion
   xerces-c
   yum-plugin-fastestmirror

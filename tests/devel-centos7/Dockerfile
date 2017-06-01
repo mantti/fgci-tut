@@ -20,7 +20,7 @@ RUN yum clean all && \
     yum -y remove $(rpm -qa "*-devel") && \
     yum -y groupremove "Development tools" && \
     yum -y autoremove && \
-    yum -y install bzip2 crontabs file findutils gem git gzip hg procps-ng svn sudo tar which unzip xz zip && \
+    yum -y install bzip2 crontabs file findutils gem git gzip hg procps-ng svn sudo tar tree which unzip xz zip && \
     yum clean all && rm -rf /var/cache/yum
 
 RUN mkdir /etc/ansible/
@@ -28,8 +28,7 @@ RUN echo -e '[local]\nlocalhost\n' > /etc/ansible/hosts
 RUN mkdir /opt/ansible/
 RUN git clone http://github.com/ansible/ansible.git /opt/ansible/ansible
 WORKDIR /opt/ansible/ansible
-# because at a later commit we hit https://github.com/ansible/ansible/issues/17534
-RUN git checkout f4af154beff2b281e464b616f504293d67187da5
+#RUN git checkout f4af154beff2b281e464b616f504293d67187da5
 RUN git submodule update --init
 ENV PATH /opt/ansible/ansible/bin:/bin:/usr/bin:/sbin:/usr/sbin
 ENV PYTHONPATH /opt/ansible/ansible/lib

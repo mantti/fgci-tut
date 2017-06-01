@@ -34,6 +34,7 @@
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: local-customization, tags: ['local'] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
+  - { role: systemd_rpcbind, tags: [ 'systemd', 'rpcbind' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
 
 - name: Mount /home and /scratch on Install Node
