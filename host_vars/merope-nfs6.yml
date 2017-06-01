@@ -17,3 +17,12 @@ kickstart_partitions: |
 # Testing sshd_options
 sshd:
  HostKey: "/etc/ssh/ssh_host_ed25519_key"
+
+autofs_indirect_maps:
+   - name: autofs.nfs
+     path: /-
+     mounts:
+        - name: "/home" 
+          fstype: "nfs,rw,bg,hard,intr,tcp,resvport"
+          url: "narvi-nfs:/home"
+
