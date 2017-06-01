@@ -17,11 +17,11 @@ Used in production in >9 uniform HPC clusters.
    - Ethernet and Infiniband networks
 
 ## Software Stack:
- - Ansible (ansible-pull is used on the compute nodes, push mode on the rest)
+ - [Ansible](http://ansible.com/) (ansible-pull is used on the compute nodes, push mode on the rest)
  - CentOS 7
- - CVMFS for software distribution á la modules
- - Nordugrid ARC
- - Slurm
+ - [CVMFS](https://cernvm.cern.ch/portal/filesystem) for software distribution á la modules
+ - [Nordugrid ARC](http://www.nordugrid.org/arc/)
+ - [SLURM](https://slurm.schedmd.com/)
 
 # Minimally Descriptive Configuration:
  - clone this repo
@@ -42,7 +42,7 @@ ansible-playbook -u ssh-user -i hosts site.yml --tags user --diff
 
 For our backlog checkout the waffle iron: https://waffle.io/CSC-IT-Center-for-Science/fgci-ansible
 
-## Contributions
+## Contributions, Workflow and role preferences
 
 <a href="CONTRIBUTION.MD">CONTRIBUTION.MD</a>
 
