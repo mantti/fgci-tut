@@ -5,9 +5,6 @@ Used in production in >9 uniform HPC clusters.
 
 <a href="https://research.csc.fi/fgci"><img src="meta/FGCI-logo.jpg"></a>
 
-=======
-[Build Status](https://travis-ci.org/CSC-IT-Center-for-Science/fgci-ansible) [Backlog](https://waffle.io/CSC-IT-Center-for-Science/fgci-ansible)
-
 ## Physical Hardware:
  - The clusters are made with the same basic building blocks:
    - One admin node (hypervisor for one grid (middleware) and one install node (slurm services, git mirror, pxe/dhcp))
@@ -40,7 +37,7 @@ ansible-playbook -u ssh-user -i hosts site.yml --tags user --diff
 
 ## Backlog
 
-For our backlog checkout the waffle iron: https://waffle.io/CSC-IT-Center-for-Science/fgci-ansible
+For our backlog checkout the waffle iron: https://waffle.io/CSCfi/fgci-ansible
 
 ## Contributions, Workflow and role preferences
 
