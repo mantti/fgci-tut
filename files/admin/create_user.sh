@@ -31,7 +31,7 @@ Ask_User_Info () {
 	select MYACCOUNT in "${SLURM_ACCOUNTS[@]}"
     do  
         MY_SLURM_ACCOUNT=$MYACCOUNT
-        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOG_FILE}
+        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOGFILE}
         break
     done
 	read -e -p "Give supervisors email-address (e.g. Users@tut.fi):" MANAGER
@@ -225,11 +225,11 @@ then
     select MYACCOUNT in "${SLURM_ACCOUNTS[@]}"
     do  
         MY_SLURM_ACCOUNT=$MYACCOUNT
-        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOG_FILE}
+        echo Selected $MY_SLURM_ACCOUNT from $SLURM_ACCOUNTS | sudo tee -a ${LOGFILE}
         break
     done
 else
-    echo Accepted default slurm account $MY_SLURM_ACCOUNT | sudo tee -a ${LOG_FILE}
+    echo Accepted default slurm account $MY_SLURM_ACCOUNT | sudo tee -a ${LOGFILE}
 fi
 
 
