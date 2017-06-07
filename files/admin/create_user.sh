@@ -231,7 +231,8 @@ then
 else
     echo Accepted default slurm account $MY_SLURM_ACCOUNT | sudo tee -a ${LOGFILE}
 fi
-
+# Lets create that fcking account
+sudo sacctmgr -i add user name=${MYUSER} account=${MY_SLURM_ACCOUNT}
 
 # If we already have sshkey, so let's add it also
 if [ "$OPENSSH" != "NO" ]
