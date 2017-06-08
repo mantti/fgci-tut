@@ -37,6 +37,15 @@ Ask_User_Info () {
 	read -e -p "Give supervisors email-address (e.g. Users@tut.fi):" MANAGER
 }
 
+Debug_Text () {
+	echo
+	echo "==== Debug ===="
+	echo "${1}"
+	echo
+	echo "==== /Debug ===="
+	echo 
+}
+
 if [ "$UID" = "0" ] 
 then
 	no_root
@@ -70,10 +79,19 @@ DEP=`echo "${LDAP}" | awk '/^departmentNumber:/{print $2}'|head -n1`
 # Array of hosts ( not used anywhere yet)
 HOSTS=(`echo "${LDAP}" | awk '/^host:/{print $2}'`)
 #MANAGER=`echo "${LDAP}" | awk '/^manager:/{print $2}'`
-MANAGER=`echo $LDAP|awk '/manager: /{print gensub(/manager: uid=([a-z]*),.*/,"\\1","g")}'`
+#MANAGER=`echo $LDAP|awk '/manager: /{print gensub(/manager: uid=([a-z]*),.*/,"\\1","g")}'`
 #MYCN=$(echo "$CN" | base64 --decode 2>/dev/null)
-LDAP2=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$MANAGER)" mail )
-MANAGERMAIL=`echo $LDAP2|awk '/mail:/{print $2}'`
+#LDAP2=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$MANAGER)" mail )
+#MANAGERMAIL=`echo $LDAP2|awk '/mail:/{print $2}'`
+#Manager email needs to be queried from ldap according to manager-uid
+MANAGER=`echo "${LDAP}" | awk '/^manager:/{print gensub(/.*manager:.uid=([a-z0-9]+),.*/,"\\\1","g")}'`
+# If we have manager, let's find his/hers email
+if [ "$MANAGER" != "" ]
+then
+	LDAP2=$(ldapsearch -D "uid=grid_unixuser,ou=ServerUsers,o=tut.fi" -y ${LDAPKEY} -H ldaps://ldap.tut.fi -S cn -b "ou=People,o=tut.fi" "(uid=$MANAGER)" mail )
+	MANAGERMAIL=`echo "${LDAP2}" | awk '/^mail:/{print $2}'`
+	# Debug_Text "$MANAGER := MANAGERMAIL"
+fi
 # Parsing results
 
 # Let's check if cn is base64 encoded
@@ -159,16 +177,20 @@ case "$DEP" in
 		MY_SLURM_ACCOUNT="SGN"
 #		MYHOME=/sgn/$1
 #		MYGROUPS="-G sgn"
+		MYHOME=/home/$1
 		;;
 	611*)
 		MY_SLURM_ACCOUNT="FYS"
 #		MYHOME=/fys/$1
+		MYHOME=/home/$1
 		;;
 	511*)
 		MY_SLURM_ACCOUNT="BMT"
+		MYHOME=/home/$1
 		;;
 	Student)
 		MY_SLURM_ACCOUNT="Student"
+		MYHOME=/home/$1
 		;;
 	*)	
 		MY_SLURM_ACCOUNT="TCSC"
@@ -199,8 +221,8 @@ sudo useradd -c "$MYCN,$MAIL,$DEP,$MANAGERMAIL" ${UIDPARAMETER} -d $MYHOME -m $M
 
 sudo make -C /var/yp
 
-sudo service ypserv restart
-
+#sudo service ypserv restart
+#
 sudo chage -d `date --date "+1 year" '+%Y-%m-%d '` -M 365 -W 14 $1
 
 if [ "$UIDNUMBER" = "" ] 
@@ -221,7 +243,7 @@ read -e -t 10 -p ":" ACCOUNT_OK
 # The exit status is greater than 128 if this timeouts
 if [ "$?" -ge "128" ]
 then
-    echo "Please select the slurm account for user ${MYUSER}"
+    echo "Please select the slurm account for user $1"
     select MYACCOUNT in "${SLURM_ACCOUNTS[@]}"
     do  
         MY_SLURM_ACCOUNT=$MYACCOUNT
@@ -232,7 +254,7 @@ else
     echo Accepted default slurm account $MY_SLURM_ACCOUNT | sudo tee -a ${LOGFILE}
 fi
 # Lets create that fcking account
-sudo sacctmgr -i add user name=${MYUSER} account=${MY_SLURM_ACCOUNT}
+sudo sacctmgr -i add user name=$1 account=${MY_SLURM_ACCOUNT}
 
 # If we already have sshkey, so let's add it also
 if [ "$OPENSSH" != "NO" ]
