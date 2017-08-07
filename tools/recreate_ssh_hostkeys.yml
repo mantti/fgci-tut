@@ -1,0 +1,33 @@
+---
+#
+# This playbook will set reinstall flags for defined node on Install node
+#
+
+- name:  Create hosts ssh-hostkeys
+  hosts: localhost
+  remote_user: root
+  vars_prompt:
+          - name: node_name
+            prompt: "Insert the node's name to recreate\n"
+            private: no
+  
+  tasks:
+  - name: create SSH host key directory in files/nodes/nodename/ssh
+    file: "path=files/nodes/{{ node_name }}/ssh state=directory recurse=yes"
+    delegate_to: localhost
+
+  - name: generate SSH ed25519 host keys for the nodes
+    command: /usr/bin/ssh-keygen -t ed25519 -f files/nodes/{{ node_name }}/ssh/ssh_host_ed25519_key -N "" -C "" creates=files/nodes/{{ node_name }}/ssh/ssh_host_ed25519_key.pub
+    delegate_to: localhost
+
+- include: distribute-ssh-hostkeys.yml
+#  - name: Create node reinstall flag file in Install node
+#    file: path=/var/www/provision/reinstall/{{ node_name }} state=touch
+#
+#  - name: Delete known_hosts entry for the node
+#    lineinfile: dest=/root/.ssh/known_hosts regexp="^{{ node_name }}," state=absent
+
+
+#Local
+#Generate SSH keys locally where you run ansible
+
