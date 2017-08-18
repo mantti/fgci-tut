@@ -1,0 +1,28 @@
+nfs_exports: { "/bmt-data 10.0.0.0/8(rw,sync,no_root_squash)" }
+internal_interface: "em3"
+ib_interface: "ib0"
+# We have different size of root disks, so we need different partitioning (2X300G RAID1)
+kickstart_partitions: |
+  bootloader --location=mbr --append="selinux=0"
+  zerombr
+  clearpart --initlabel --drives=sda --all
+  part /boot --size=500 --asprimary --ondrive=sda 
+  part pv.01 --size=1 --grow --ondrive=sda
+  volgroup vgroot --pesize=4096 pv.01
+  logvol /  --fstype="xfs" --size=100000 --name=lv_root --vgname=vgroot
+  logvol swap --fstype="swap" --size=10000 --name=lv_swap --vgname=vgroot
+  logvol /var  --fstype="xfs" --size=100000 --name=lv_var --vgname=vgroot
+  logvol /tmp  --fstype="xfs" --size=50000 --name=lv_tmp --vgname=vgroot
+
+# Testing sshd_options
+sshd:
+ HostKey: "/etc/ssh/ssh_host_ed25519_key"
+
+autofs_indirect_maps:
+   - name: autofs.nfs
+     path: /-
+     mounts:
+        - name: "/home" 
+          fstype: "nfs,rw,bg,hard,intr,tcp,resvport"
+          url: "narvi-nfs:/home"
+

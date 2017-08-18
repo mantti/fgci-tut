@@ -1,0 +1,172 @@
+---
+
+external_interface: "eth0"
+
+internal_interface: "eth1"
+int_net_addr: "10.1.0.0"
+int_ip_addr: "10.1.10.2"
+int_net_mask: "255.255.0.0"
+int_gateway: "10.1.10.4"
+
+internal_ip: "{{int_ip_addr}}"
+internal_net: "10.1.0.0/16" 
+
+admingroup: "admin"
+network_scheduler: "fq_codel"
+
+nameserver1: "10.1.10.2"
+nameserver2: "10.1.1.2"
+nameserver3: "130.230.24.10"
+
+network_ether_interfaces:
+  - device: "{{external_interface}}"
+    bootproto: "static"
+    onboot: "yes"
+    address: "{{ext_ip_addr}}"
+    netmask: "{{ext_net_mask}}"
+    gateway: "{{ext_gateway}}"
+    defroute: "yes"
+    nm_controlled: "no"
+    type: "Ethernet"
+    route:
+      - network: "{{ext_net_addr}}"
+        netmask: "{{ext_net_mask}}"
+        gateway: "{{ext_gateway}}"
+
+
+  - device: "{{internal_interface}}"
+    bootproto: "static"
+    onboot: "yes"
+    address: "{{int_ip_addr}}"
+    netmask: "{{int_net_mask}}"
+    nm_controlled: "no"
+    type: "Ethernet"
+
+nfs_mount_addr: "10.1.10.5"
+scratch_nfs_addr: "10.1.1.98"
+nfs_fys: "10.1.1.6"
+nfs_sgn: "10.1.1.7"
+fys_data: "10.1.1.9"
+sgn_data: "10.1.1.20"
+
+dns_resolv_search: "{{ intDomain }}.{{ siteDomain }} local"
+
+## DHCP_SERVER
+
+dhcp_interfaces: "{{ internal_interface }}"
+dhcp_common_nameservers: "{{ int_ip_addr }}, {{ nameserver2 }}, {{ nameserver3 }}"
+dhcp_common_default_lease_time: 10080
+dhcp_common_max_lease_time: 20160
+dhcp_common_options: []
+dhcp_common_parameters:
+ - include "/etc/dhcp/dhcpd.d/ipxe.conf"
+ - include "/etc/dhcp/dhcpd.d/nodes.conf"
+dhcp_subnets:
+ - base: "{{ int_net_addr }}"
+   netmask: "{{ int_net_mask }}"
+   routers: "{{ int_ip_addr }}"
+# routers: "{{ hostvars[groups['login'][0]]['int_ip_addr'] }}" 
+   interface: "{{ internal_interface }}"
+   domain_nameservers: "{{ int_ip_addr }}, {{ nameserver2 }}, {{ nameserver3 }}"
+   domain_name: "{{ dhcp_common_domain }}"
+
+dhcp_tftp_server_ip: "{{ int_ip_addr }}"
+
+# Kickstart file VM specifics
+
+vcpus: "{{vm_cpus}}"
+ram: "{{vm_mem}}"
+
+disks:
+  - { pool: "{{ libvirt_pool_name }}", size: 200 }
+bridges:
+  - br_ext
+  - br_int
+  - br_mgmt
+location: "{{repo_location}}"
+kickstart_tempdir: "/tmp"
+fqdn: "{{siteName}}-install.{{siteDomain}}"
+networks:
+  - "network --onboot={{enable_ext_nic}} --device={{external_interface}} --bootproto=static --ip={{ext_ip_addr}} --netmask={{ext_net_mask}} --nameserver={{nameserver2}} --hostname={{ fqdn }} --gateway={{ext_gateway}} --noipv6"
+
+# Slurm
+slurm_type: "service"
+slurm_compute_threadspercore: 1
+
+# SSHD
+sshd:
+ AllowGroups: "root admin" 
+ PermitRootLogin: "without-password"
+
+# Do not install host keys on this node
+install_ssh_host_keys_from_nfs: False
+# Do not copy them to NFS
+install_ssh_host_keys_to_nfs: True
+# But do install the known_hosts files
+install_ssh_known_hosts_from_http: True
+generate_ssh_known_hosts: True
+
+# Install extra packages
+unconfigured_packages:
+ - git
+ - nfs-utils
+ - bash-completion
+ - wget
+ - pdsh
+ - fgci-meta-install
+ - openldap-clients
+
+# For sure do not install infiniband packages on install node
+infiniband_available: False
+
+# NIS server settings
+nis_server: True
+nis_initialize: True
+nis_enabled: True
+
+# DNSmasq
+dnsmasq_listen_address: "{{ int_ip_addr }}"
+
+## KS profile and server Dir
+ksBootSrvDir: "/var/www/html/ks"
+
+# central syslog
+central_log_host: "@10.1.10.1"
+
+#Users
+adminremove_passwords: True
+
+#Setup NAT
+ferm_rules_extra:
+ nat:
+ - chain: FORWARD
+   table: filter
+   domains: [ip, ip6]
+   rules:
+     - {rule: "interface {{ internal_interface }} outerface {{ external_interface }} mod comment comment 'forward from internal net ' ACCEPT;", comment: "forwarding"}
+     - {rule: "interface {{ external_interface }} outerface {{ internal_interface }} mod state state (ESTABLISHED RELATED) mod comment comment 'forward established and related from internal net' ACCEPT;", comment: "forwarding"}
+ - chain: POSTROUTING
+   table: nat
+   domains: [ip]
+   rules:
+     - {rule: "outerface {{ external_interface }} saddr ( {{ internal_net }} ) mod comment comment 'masquerade for internal net' MASQUERADE;", comment: "masquerade"}
+
+# NTP/chrony server
+chrony_allow_deny:
+ - "allow {{ internal_net }}"
+
+autofs_indirect_maps:
+#  - name: autofs.home
+#    path: /home
+#    mounts: 
+#      - name: "*"
+#        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+#        url: "{{ nfs_mount_addr }}:/home/&"
+   - name: autofs.nfs
+     path: /-
+     mounts:
+        - name: "/home" 
+          fstype: "nfs,rw,bg,hard,intr,tcp,resvport"
+          url: "narvi-nfs:/home"
+
+
