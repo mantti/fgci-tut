@@ -10,3 +10,6 @@
 [submodule "roles/local-customization"]
 	path = roles/local-customization
 	url = git@github.com:mantti/ansible-role-local-customization.git
+[submodule "roles/local-customization-install"]
+	path = roles/local-customization-install
+	url = git@github.com:mantti/ansible-role-local-customization-install.git
