@@ -1,0 +1,6 @@
+kickstart_partitions: |
+    bootloader --location=mbr --append="selinux=0" --boot-drive=vda
+    autopart --type=lvm
+    zerombr
+    clearpart --all --initlabel --drives=vda
+

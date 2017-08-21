@@ -1,0 +1,11 @@
+---
+
+bios_newest_name: "C4130_BIOS_Y57N3_LN_2.4.2.BIN"
+bios_newest_version: "2.4.2"
+
+ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-0XK4C4-FlexBoot-3.4.718.bin"
+ib_firmware_newest_version: "2.36.5000"
+
+idrac_newest_name: "iDRAC-with-Lifecycle-Controller_Firmware_4CVFY_LN_2.43.43.43_A00.BIN"
+idrac_newest_version: "2.43.43.43"
+

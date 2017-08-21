@@ -1,0 +1,271 @@
+---
+
+internal_interface: "em2" 
+external_interface: "em1"
+ib_interface: "ib0"
+
+network_scheduler: "fq_codel"
+internal_net: "10.0.0.0/8"
+
+int_ip_addr: "10.1.10.4"
+internal_ip: "{{int_ip_addr}}"
+int_net_mask: "255.255.0.0"
+
+ib_ip_addr: "10.2.10.4"
+ib_net_mask: "255.255.0.0"
+
+network_ether_interfaces:
+  - device: "{{ib_interface}}"
+    bootproto: "static"
+    onboot: "yes"
+    address: "{{ib_ip_addr}}"
+    netmask: "{{ib_net_mask}}"
+    nm_controlled: "no"
+
+infiniband_available: True
+#rdma_configure_single_port: True
+rdma_configure_single_port: False
+rdma_manage_rdma: False
+rdma_enabled: False
+
+yum_repos:
+  - { name: "Mellanox-IB", description: "Mellanox IB-stack repo", url: "http://{{ kickstart_server_ip }}/Mellanox-repo/{{ ansible_distribution_major_version }}", gpgcheck: no, enabled: yes }
+
+vcpus: "{{vm_cpus}}"
+ram: "{{vm_mem}}"
+disks:
+  - { path: "/var/vms/login.raw", size: 180 }
+bridges:
+  - br_ext
+  - br_int
+location: "{{repo_location}}"
+kickstart_tempdir: "/tmp"
+fqdn: "{{siteName}}.{{siteDomain}}"
+networks:
+  - "network --onboot=yes --bootproto=dhcp --device={{ internal_interface }} --noipv6 --nodefroute"
+  - "network --onboot={{enable_ext_nic}} --device={{external_interface}} --bootproto=static --ip={{ext_ip_addr}} --netmask={{ext_net_mask}} --nameserver={{nameserver1}} --hostname={{ fqdn }} --gateway={{ext_gateway}} --noipv6"
+extdefroute: True
+chgIntGW: True
+
+# Slurm
+slurm_type: "submit"
+
+# This makes ansible-role-ferm-firewall restart fail2ban if ferm is reloaded.
+ferm_fail2ban: True
+
+# Do not install host keys on this node
+install_ssh_host_keys: False
+# Do install the known_hosts files
+install_ssh_known_hosts_from_http: True
+
+
+# Ferm - firewall
+ferm_rules_extra:
+ 08_fail2ban:
+ - chain: INPUT
+   table: filter
+   domains: [ip]
+   rules:
+     - {rule: "proto tcp mod multiport destination-ports (22) jump f2b-sshd;", comment: "default fail2ban rule"}
+ - chain: f2b-sshd
+   table: filter
+   domains: [ip]
+   rules:
+     - {rule: "RETURN;", comment: "default fail2ban rule"}
+ 90_ssh_internet:
+ - chain: INPUT
+   table: filter
+   domains: [ip, ip6]
+   rules:
+     - {rule: "proto tcp dport (22) mod state state (NEW) mod comment comment 'Allow new SSH' ACCEPT;", comment: "SSH allow new connections from everywhere"}
+ 92_nat:
+ - chain: FORWARD
+   table: filter
+   domains: [ip]
+   rules:
+     - {rule: "interface {{ internal_interface }} outerface {{ external_interface }} mod comment comment 'forward from internal net ' ACCEPT;", comment: "forwarding"}
+     - {rule: "interface {{ external_interface }} outerface {{ internal_interface }} mod state state (ESTABLISHED RELATED) mod comment comment 'forward established and related from internal net' ACCEPT;", comment: "forwarding"}
+ - chain: POSTROUTING
+   table: nat
+   domains: [ip]
+   rules:
+     - {rule: "outerface {{ external_interface }} saddr ( {{ internal_net }} ) mod comment comment 'masquerade for internal net' MASQUERADE;", comment: "masquerade"}
+
+# Fail2ban - firewall
+fail2ban_config:
+  ignoreip: 127.0.0.0/8 {{ internal_net }} {{ trusted_public_networks }}
+  bantime: 600
+  findtime: 1800
+  maxretry: 8
+  destemail: root@localhost
+fail2ban_jails:
+  sshd:
+    banaction: "iptables-multiport"
+    enabled: 'true'
+    port: 'ssh'
+    protocol: 'tcp'
+    logpath: '/var/log/secure'
+    maxretry: 5
+
+unconfigured_packages:
+  - fgci-meta-login
+  - rpm-build
+  - x2goserver
+  - python34-pip 
+  - python-virtualenv 
+  - python34-devel
+  - xpra-common
+  - gmp-devel
+  - mpfr-devel
+  - libmpc-devel
+  - krb5-workstation
+  - cifs-utils
+  - xterm
+  - openjpeg-devel
+  - openjpeg2-devel
+  - wget
+  - xorg-x11-server-devel
+  - libX11-devel
+  - octave 
+  - plplot-octave 
+  - octave-netcdf 
+  - octave-image 
+  - octave-doc 
+  - octave-devel
+  - libXt-devel
+  - screen
+  - emacs 
+  - emacs-git
+  - emacs-filesystem
+  - logwatch
+
+sshd:
+ PermitRootLogin: "without-password"
+ PasswordAuthentication: "no"
+
+#NTP
+ntp_config_server: [ "{{ hostvars[groups['install'][0]]['ansible_hostname'] }}", "{{ hostvars[groups['admin'][0]]['ansible_hostname'] }}" ]
+postfix_relayhost: "mail.tut.fi"
+
+#CVMFS
+cvmfs_http_proxy: "{{ http_proxy }}"
+cvmfs_quota_limit: "10240"
+
+#Configure SMART
+smartd_service: True
+
+#Limits for MPI
+limits_domains:
+  - domain: '*'
+    type: 'hard'
+    item: memlock
+    value: unlimited
+  - domain: '*'
+    type: 'soft'
+    item: memlock
+    value: unlimited
+  - domain: '*'
+    type: 'hard'
+    item: stack
+    value: unlimited
+  - domain: '*'
+    type: 'soft'
+    item: stack
+    value: unlimited
+
+## PAM - overwrite pam.d/system-auth and password-auth
+pam_enabled: True
+
+nfs_mounts:
+ - { name: "/scratch", src: "{{ scratch_nfs_addr }}:/scratch" }
+ - { name: "/sgn", src: "{{ sgn_nfs }}:/sgn", opts: 'rsize=1048576,wsize=1048576,intr' }
+ - { name: "/fys", src: "{{ fys_nfs }}:/fys", opts: 'rsize=1048576,wsize=1048576,intr' }
+ - { name: "/sgn-data", src: "{{ sgn_data }}:/sgn-data", opts: 'rsize=1048576,wsize=1048576,intr,noacl' }
+ - { name: "/fys-data", src: "{{ fys_data }}:/data", opts: 'rsize=1048576,wsize=1048576,intr,noacl' }
+ - { name: "/bmt-data", src: "{{ bmt_data }}:/bmt-data", opts: 'rsize=1048576,wsize=1048576,intr,noacl' }
+
+autofs_indirect_maps: 
+  - name: autofs.nfs
+    path: /export
+    mounts:
+      - name: "opt"
+        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+        url: "{{ nfs_oldhome }}:/home/opt"
+      - name: "fys" 
+        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+        url: "{{ fys_nfs }}:/fys"
+      - name: "sgn" 
+        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+        url: "{{ sgn_nfs }}:/sgn"
+      - name: "home" 
+        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+        url: "{{ nfs_oldhome }}:/home"
+  - name: autofs.home
+    path: /home
+    mounts: 
+      - name: "*"
+        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+        url: "{{ nfs_mount_addr }}:/home/&"
+  - name: autofs.intrahome
+    options: "--timeout=1800 --ghost"
+    path: /intra/home
+    mounts: 
+      - name: "*"
+        fstype: "cifs,sec=krb5,user=&,domain=intra,uid=$UID,cruid=$UID,file_mode=0600,dir_mode=0700,nounix,noserverino,nobrl"
+        url: "://intra.tut.fi/Home/&"
+  - name: autofs.intrastaff
+    options: "--timeout=1800 --ghost"
+    path: /intra/staff
+    mounts: 
+      - name: "*"
+        fstype: "cifs,sec=krb5,domain=INTRA,multiuser,cruid=$UID,file_mode=0600,dir_mode=0700,nounix,noserverino,nobrl"
+        url: "://intra.tut.fi/Staff/&"
+
+## PXE
+
+kickstart_profile: FGCI-login-node
+#kickstart_server_ip: 10.1.1.2
+kickstart_partitions: |
+  bootloader --location=mbr --append="selinux=0" --boot-drive=sda
+  autopart --type=lvm
+  zerombr
+  clearpart --all --initlabel --drives=sda
+kickstart_packages: |
+  atlas
+  bash-completion
+  blas
+  bonnie++
+  cvs
+  epel-release
+  fftw
+  fftw2
+  finger
+  gcc
+  gcc-c++
+  gcc-gfortran
+  git
+  glibc.i686
+  hdf5-openmpi
+  @infiniband
+  infiniband-diags
+  iperf
+  java-1.8.0-openjdk
+  lapack
+  libcgroup
+  libgcc.i686
+  libgfortran
+  libstdc++.i686
+  libxml2.i686
+  mcelog
+  mpitests-openmpi
+  netcdf
+  nfs-utils
+  nscd
+  numpy
+  openmpi
+  openssh-server
+  perl-Filesys-Df
+  subversion
+  xerces-c
+  yum-plugin-fastestmirror
+  Lmod
