@@ -84,7 +84,6 @@ repo_location: "http://www.nic.funet.fi/pub/mirrors/centos.org/7/os/x86_64/"
 repos:
   - { name: "EPEL", url: "http://www.nic.funet.fi/pub/mirrors/fedora.redhat.com/pub/epel/7/x86_64", pkgname: "epel-release" }
   - { name: "Mellanox-IB", url: "http://{{ kickstart_server_ip }}/Mellanox-repo" }
-    when "{{infiniband_available}"
     
 #  - { name: "EL Repo", url: "http://elrepo.org/linux/elrepo/el7/x86_64", pkgname: "elrepo-release" }
 
@@ -237,7 +236,7 @@ dell_install_helper_scripts: False
 postfix_relayhost: "narvi-eth.local"
 postfix_mydomain: "{{ siteDomain }}"
 
-m630_nodes: "me[156-158,280]"
+m630_nodes: "me[156-158,278-280]"
 sl230_nodes: "me[55-56]"
 
 fgci_slurmrepo_version: "fgcislurm1605"
@@ -249,8 +248,9 @@ slurm_topologylist:
   - "SwitchName=s0 Switches=s[1-4]"
   - "SwitchName=s1 Nodes=nag"
   - "SwitchName=s2 Nodes=na[01-32]"
-  - "SwitchName=s3 Nodes={{ m630_nodes }}"
-  - "SwitchName=s4 Nodes={{ sl230_nodes }}"
+  - "SwitchName=s3 Nodes=me[156-158]"
+  - "SwitchName=s4 Nodes=me[278-280]"
+  - "SwitchName=s5 Nodes={{ sl230_nodes }}"
 
 #slurm_topologylist: |
 #  ##########################
