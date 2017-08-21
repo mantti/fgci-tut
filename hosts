@@ -16,6 +16,8 @@ with_mdadm_raid
 #me-installer int_ip_addr=10.1.100.104 mac_address=52:54:00:f1:98:73 pxe_name=me-installer
 
 [without_mdadm_raid]
+me278 int_ip_addr=10.1.200.78 mac_address=44:a8:42:be:9c:5a pxe_name=me278 ib_ip_addr=10.2.200.78 mgmt_ip_addr=10.3.200.78
+me279 int_ip_addr=10.1.200.79 mac_address=44:a8:42:be:9c:67 pxe_name=me279 ib_ip_addr=10.2.200.79 mgmt_ip_addr=10.3.200.79
 me280 int_ip_addr=10.1.200.80 mac_address=44:a8:42:be:9c:74 pxe_name=me280 ib_ip_addr=10.2.200.80 mgmt_ip_addr=10.3.200.80
 me158 int_ip_addr=10.1.100.158 mac_address=4c:76:25:7b:19:dc pxe_name=me158 ib_ip_addr=10.2.100.158 mgmt_ip_addr=10.3.100.158
 me157 int_ip_addr=10.1.100.157 mac_address=4c:76:25:7b:1a:37 pxe_name=me157 ib_ip_addr=10.2.100.157 mgmt_ip_addr=10.3.100.157
