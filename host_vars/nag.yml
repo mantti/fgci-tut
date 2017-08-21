@@ -1,9 +1,0 @@
-infiniband_available: True
-
-bios_newest_name: "C4130_BIOS_VWFV8_LN_2.3.3.BIN"
-bios_newest_version: "2.3.3"
-
-ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-08PTD1-Flexboot-3.4.718.bin"
-ib_firmware_newest_version: "2.36.5000"
-
-

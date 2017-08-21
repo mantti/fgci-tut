@@ -1,8 +1,0 @@
----
-infiniband_available: True
-bios_newest_name: "sl390sg7-firmware-system-p69-2015.08.16-1.1.i386.tgz"
-bios_newest_version: "08/16/2015"
-
-#ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-649282-B21_Cx-Dx-FlexBoot-3.4.718-CLP-8025.bin"
-ib_firmware_newest_name: "fw-ConnectX2-2_9_1710-SL390sG7-Flexboot-3.3.500.bin"
-ib_firmware_newest_version: "2.9.1710"
