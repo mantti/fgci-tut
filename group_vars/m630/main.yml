@@ -1,14 +1,14 @@
 ---
 infiniband_available: True
 
-bios_newest_name: "BIOS_DH7R1_LN_2.4.2.BIN"
-bios_newest_version: "2.4.2"
+bios_newest_name: "BIOS_FV8R5_LN_2.5.4.BIN"
+bios_newest_version: "2.5.4"
 
-ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-08PTD1-Flexboot-3.4.718.bin"
-ib_firmware_newest_version: "2.36.5000"
+ib_firmware_newest_name: "fw-ConnectX3-rel-2_40_5048-08PTD1-FlexBoot-3.4.746.bin"
+ib_firmware_newest_version: "2.40.5048"
 
-idrac_newest_name: "iDRAC-with-Lifecycle-Controller_Firmware_4950Y_LN_2.41.40.40_A00.BIN"
-idrac_newest_version: "2.41.40.40"
+idrac_newest_name: "iDRAC-with-Lifecycle-Controller_Firmware_278FC_LN_2.50.50.50_A00.BIN"
+idrac_newest_version: "2.50.50.50"
 
 # Our m630's have hw-raid configured, so no mdadm raid for us
 

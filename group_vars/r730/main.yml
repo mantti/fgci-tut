@@ -1,6 +1,12 @@
 ---
-bios_newest_name: "BIOS_0FR48_LN_2.3.4.BIN"
-bios_newest_version: "2.3.4"
+# bios_newest_name: "BIOS_0FR48_LN_2.3.4.BIN"
+bios_newest_name: "BIOS_Y4Y95_LN_2.5.5.BIN"
+bios_newest_version: "2.5.5"
 
-ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-079DJ3-FlexBoot-3.4.718.bin"
-ib_firmware_newest_version: "2.36.5000"
+#ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-079DJ3-FlexBoot-3.4.718.bin"
+ib_firmware_newest_name: "fw-ConnectX3-rel-2_42_5000-MCX353A-FCB_A2-A5-FlexBoot-3.4.752.bin"
+ib_firmware_newest_version: "3.4.752"
+
+idrac_newest_name: "iDRAC-with-Lifecycle-Controller_Firmware_278FC_LN_2.50.50.50_A00.BIN"
+idrac_newest_version: "2.50.50.50"
+
