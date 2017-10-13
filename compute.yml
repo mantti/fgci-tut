@@ -9,8 +9,8 @@
 
 - name: Compute Nodes
   hosts: compute
-#strategy: free
-  strategy: debug
+  strategy: free
+# strategy: debug
   remote_user: root
   become: yes
 
