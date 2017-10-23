@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+myhostname = {{ ansible_fqdn }}
+{% if postfix_mydomain is defined %}
+mydomain = {{ postfix_mydomain }}
+{% endif %}
+myorigin = $myhostname
+{% if postfix_relayhost is defined %}
+relayhost = {{ postfix_relayhost }}
+{% endif %}
+{% if postfix_ipv4_only %}
+inet_protocols = ipv4
+{% endif %}
+inet_interfaces = loopback-only
+mydestination =
