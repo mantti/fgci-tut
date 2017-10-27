@@ -138,7 +138,7 @@ else
 	if [ "$DEP" = "" ]
 	then
 		echo "Didn't found departmentnumber from LDAP, defaulting to Student?"
-		read -e -i "Student" DEP
+		read -e -i "Students" DEP
 
 	fi
 
@@ -188,8 +188,8 @@ case "$DEP" in
 		MY_SLURM_ACCOUNT="BMT"
 		MYHOME=/home/$1
 		;;
-	Student)
-		MY_SLURM_ACCOUNT="Student"
+	Students)
+		MY_SLURM_ACCOUNT="Students"
 		MYHOME=/home/$1
 		;;
 	*)	
