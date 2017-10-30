@@ -2,26 +2,12 @@
 # tasks file for ansible-role-postfix
 #
 - name: make sure postfix is installed
-  action: >
-    {{ ansible_pkg_mgr }}
-    name=postfix
-    state=installed
+  package: name=postfix state=present
 
-- name: set inet_protocols to ipv4
-  lineinfile: dest=/etc/postfix/main.cf 
-              line="inet_protocols = ipv4" 
-              backup=yes 
-              regexp="^inet_protocols = .*"
-  when: postfix_ipv4_only
-  notify:
-    - reload postfix
+- name: Create the postfix main.cf config file
+  template: src=main.cf.j2 dest=/etc/postfix/main.cf owner=root group=root mode="0644" backup=yes
+  notify: restart postfix
 
-- name: set relayhost
-  lineinfile: dest=/etc/postfix/main.cf 
-              line="relayhost = {{ postfix_relayhost }}" 
-              backup=yes 
-              regexp="^relayhost = {{ postfix_relayhost }}$"
-  when: postfix_relayhost != "" 
-  notify:
-    - reload postfix
+- name: Start and enable postfix
+  service: name=postfix state=started enabled=yes
 
