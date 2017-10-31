@@ -1,5 +1,12 @@
 ---
 
+- name: Local customization
+  hosts: production
+  strategy: free
+# strategy: debug
+  remote_user: root
+  become: yes
+
 
 - hosts: all
   roles:
@@ -16,6 +23,7 @@
   - local-customization-admin
   
 - hosts: login
+  remote_user: root
   roles:
   - local-customization-login
 
