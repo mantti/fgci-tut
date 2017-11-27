@@ -54,5 +54,6 @@
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: systemd_rpcbind, tags: [ 'systemd', 'rpcbind' ] }
   - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
+  - { role: ansible-role-singularity, tags: [ 'singularity' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
   - { role: local-customization, tags: ['local'] }
