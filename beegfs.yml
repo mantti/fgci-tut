@@ -6,8 +6,8 @@
   hosts: production
   tasks: [ ]
 
-- name: NFS Node
-  hosts: nfs
+- name: BeeGFS Node
+  hosts: beegfs
   remote_user: root
   become: yes
 
@@ -23,24 +23,25 @@
   - { role: ansible-role-rsyslog, tags: [ 'rsyslog' ] }
   - { role: ansible-role-nis, tags: [ 'nis' ] }
   - { role: ansible-role-aliases, tags: [ 'aliases', 'email' ] }
-  - { role: ansible-role-smartd, tags: [ 'smartd' ] }
-  - { role: ansible-role-idmapd, tags: [ 'idmapd' ] }
+#  - { role: ansible-role-smartd, tags: [ 'smartd' ] }
+#  - { role: ansible-role-idmapd, tags: [ 'idmapd' ] }
   - { role: ansible-role-nfs, tags: [ 'nfs' ] }
-#  - { role: ansible-role-cvmfs, tags: [ 'cvmfs' ] }
-  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
+#  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: ansible-role-dell, tags: [ 'dell' ] }
-  - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
+#  - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: systemd_rpcbind, tags: [ 'systemd', 'rpcbind' ] }
-  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
+#  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
+  - { role: ansible-role-beegfs-client, tags: [ 'beegfs' ] }
   - { role: local-customization, tags: ['local'] }
+  - { role: local-customization-nfs, tags: ['local'] }
 
-- name: Mount /home and /scratch on Install Node
-  hosts: install
-  become: yes
+#- name: Mount /home and /scratch on Install Node
+#  hosts: install
+#  become: yes
 
-  roles: 
-  - { role: ansible-role-nfs_mount, tags: [ 'nfsmount' ] }
-  - { role: ansible-role-sshd-host-keys, tags: [ 'host-keys' ] }
+#  roles: 
+#  - { role: ansible-role-nfs_mount, tags: [ 'nfsmount' ] }
+#  - { role: ansible-role-sshd-host-keys, tags: [ 'host-keys' ] }
