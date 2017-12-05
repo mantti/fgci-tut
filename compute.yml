@@ -11,7 +11,7 @@
   hosts: compute
   strategy: free
 # strategy: debug
-  remote_user: root
+#  remote_user: "{{ my_remote_user | default('root') }}"
   become: yes
 
   pre_tasks:
@@ -65,6 +65,7 @@
   - { role: ansible-role-lldpd, tags: [ 'lldpd', 'lldp' ] }
   - { role: ansible-role-singularity, tags: [ 'singularity' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock' ] }
+  - { role: ansible-role-beegfs, tags: ['beegfs-client'] }
   - { role: local-customization, tags: ['local'] }
 
 # Adding a role here? Make sure to add it to local.yml too for the role to be used with ansible-pull

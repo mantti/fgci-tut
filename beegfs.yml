@@ -34,7 +34,7 @@
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: systemd_rpcbind, tags: [ 'systemd', 'rpcbind' ] }
 #  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
-  - { role: ansible-role-beegfs-client, tags: [ 'beegfs' ] }
+  - { role: ansible-role-beegfs, tags: [ 'beegfs-client' ] }
   - { role: local-customization, tags: ['local'] }
   - { role: local-customization-nfs, tags: ['local'] }
 
