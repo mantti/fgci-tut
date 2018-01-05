@@ -1,8 +1,8 @@
 ---
 infiniband_available: True
 
-bios_newest_name: "BIOS_FV8R5_LN_2.5.4.BIN"
-bios_newest_version: "2.5.4"
+bios_newest_name: "M630-BIOS_0W1XP_LN_2.6.0.BIN"
+bios_newest_version: "2.6.0"
 
 ib_firmware_newest_name: "fw-ConnectX3-rel-2_40_5048-08PTD1-FlexBoot-3.4.746.bin"
 ib_firmware_newest_version: "2.40.5048"
