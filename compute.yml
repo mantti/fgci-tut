@@ -28,6 +28,7 @@
       tags: pull
 
   roles: 
+  - { role: watermark-release, tags: [ 'always' ]  } 
   - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: network_interface, tags: [ 'network' ] }
@@ -78,3 +79,8 @@
 
   roles: 
   - { role: ansible-role-cuda, tags: [ 'cuda', 'nvidia' ] }
+
+
+# Local addons to this playbook
+#
+- import_playbook: compute_local_play.yml

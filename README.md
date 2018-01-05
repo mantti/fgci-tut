@@ -26,6 +26,7 @@ Used in production in >9 uniform HPC clusters.
  - install required ansible roles from external repositories with: <pre>ansible-galaxy install -r requirements.yml</pre> or <pre>sh tools/pullReqs.sh</pre>
  - Copy dir examples/group_vars to the repository root dir, ( fgci-ansible/group_vars )
  - Edit group_vars files with your system configuration parameters
+ - Make sure that all host_vars or group_vars files end with .yml or .yaml
 
 ## Running:
 
@@ -34,6 +35,16 @@ Basic Usage Example, more details on https://confluence.csc.fi/display/FGCI/FGCI
 ansible-playbook -i hosts site.yml --tags user
 ansible-playbook -u ssh-user -i hosts site.yml --tags user --diff
 </pre>
+
+## Site local addons
+Site local addons can be added via the following playbooks:
+ - admin\_local\_play.yml
+ - compute\_local\_play.yml
+ - grid\_local\_play.yml
+ - install\_local\_play.yml
+ - login\_local\_play.yml
+ - nfs\_local\_play.yml
+
 
 ## Backlog
 

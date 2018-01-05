@@ -12,6 +12,7 @@
   become: yes
 
   roles: 
+  - { role: watermark-release, tags: [ 'always' ]  } 
   - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos' ] }
   - { role: ansible-role-ferm-firewall, tags: [ 'firewall', 'network' ] }
@@ -45,3 +46,7 @@
   - { role: systemd_rpcbind, tags: [ 'systemd', 'rpcbind' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
   - { role: local-customization, tags: ['local'] }
+
+# Local addons to this playbook
+#
+- import_playbook: grid_local_play.yml
