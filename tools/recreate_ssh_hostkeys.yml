@@ -4,21 +4,24 @@
 #
 
 - name:  Create hosts ssh-hostkeys
-  hosts: localhost
+  gather_subset: "!all"
+  hosts: localhost,compute
   remote_user: root
-  vars_prompt:
-          - name: node_name
-            prompt: "Insert the node's name to recreate\n"
-            private: no
+#  vars_prompt:
+#          - name: node_name
+#            prompt: "Insert the node's name to recreate\n"
+#            private: no
   
   tasks:
   - name: create SSH host key directory in files/nodes/nodename/ssh
-    file: "path=files/nodes/{{ node_name }}/ssh state=directory recurse=yes"
+    file: "path=files/nodes/{{ item }}/ssh state=directory recurse=yes"
     delegate_to: localhost
+    with_items: "{{ groups.compute }}"
 
   - name: generate SSH ed25519 host keys for the nodes
-    command: /usr/bin/ssh-keygen -t ed25519 -f files/nodes/{{ node_name }}/ssh/ssh_host_ed25519_key -N "" -C "" creates=files/nodes/{{ node_name }}/ssh/ssh_host_ed25519_key.pub
+    command: /usr/bin/ssh-keygen -t ed25519 -f files/nodes/"{{ item }}"/ssh/ssh_host_ed25519_key -N "" -C "" creates=files/nodes/{{ node_name }}/ssh/ssh_host_ed25519_key.pub
     delegate_to: localhost
+    with_items: "{{ groups.compute }}"
 
 - include: distribute-ssh-hostkeys.yml
 #  - name: Create node reinstall flag file in Install node
