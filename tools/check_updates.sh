@@ -24,7 +24,7 @@ exit 20
 }
 
 #BASEURL=https://github.com/CSCfi/fgci-ansible/compare/{{ LATEST_COMMIT_IN_LOCAL_CLONE }}...{{ LATEST_COMMIT_ON_GITHUB }}
-BASEURL="https://github.com/CSCfi/fgci-ansible/compare"
+#BASEURL="https://github.com/CSCfi/fgci-ansible/compare"
 
 DEBUG=0
 
