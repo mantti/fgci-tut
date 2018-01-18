@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# yleisemmin kaytetyt hakuparametrit/tuloskentat
+#
+# uid=foo          kayttajatunnus
+# uidnumber=12213  uidnumero
+# gidnumner=123		
+# manager=uid=jmn,ou=People,o=tut.fi
+# roomnumber=SH107
+# employeeNumber=09006
+# maildrop=*
+#
+#homeDirectory: /home/mmoa
+#sambaAcctFlags: [UX         ]
+#funetEduPersonHomeOrganization: tut.fi
+#sambaSID: S-1-5-21-2295366179-477278998-72770633-20224
+#funetEduPersonEPPNTimeStamp: 19991226
+#schacHomeOrganization: tut.fi
+#gidNumber: 9612
+#eduPersonPrincipalName: mmoa@tut.fi
+#manager: uid=jmn,ou=People,o=tut.fi
+#uid: mmoa
+#mobile: 040 8490090
+#roomNumber: SH107
+#telephoneNumber: 3404
+#employeeNumber: 09006
+#givenName: Mika Markus Olavi
+#fullName: Anttila Mika Markus Olavi
+#gecos: Mika Anttila
+#uniqueNumber: 9455
+#sn: Anttila
+#manager: uid=jmn,ou=People,o=tut.fi
+#uid: mmoa
+#mobile: 040 8490090
+#roomNumber: SH107
+#telephoneNumber: 3404
+#employeeNumber: 09006
+#givenName: Mika Markus Olavi
+#fullName: Anttila Mika Markus Olavi
+#gecos: Mika Anttila
+#uniqueNumber: 9455
+#sn: Anttila
+#maildrop: mika.anttila@intra.tut.fi
+#tutDepartmentName: IT-palvelut
+#tutDepartmentNameEn: IT Services
+#cn: Mika Anttila
+#departmentNumber: 22702
+#loginShell: /bin/zsh
+#title:: Järjestelmäsuunnittelija
+#tutTitleEn: Systems Analyst
+#uidNumber: 9612
+#host: proffa.cc.tut.fi
+#host: butler.cc.tut.fi
+#host: webhotel3.tut.fi
+#host: narvi.cc.tut.fi
+#host: staff-linux.cc.tut.fi
+#host: linux-admin
+#displayName: Mika
+#mail: mika.anttila@tut.fi
+#mailname: mika.anttila@tut.fi
+#role: ACCESS_UNIX
+#role: STAFF
+#role: PESTI_TYOM_22702_227_01.01.2014_31.12.2112
+#role: 22_O
+#shadowLastChange: 1471957465
+#sambaNTPassword: 7468384DBD2F2884885EF3A0ECA6A1FE
+#userPassword:: {SSHA}0soN2dv7rcrngipjHIBDznk3f1JnRw==
+#
+SERVER=ldaps://ldap.tut.fi
+BINDD=uid=grid_unixuser,ou=ServerUsers,o=tut.fi
+KEY=/etc/ldap.key
+BASE=ou=People,o=tut.fi
+VARS=${2:-cn departmentnumber role mail host}
+
+ldapsearch -D $BINDD -y $KEY -H $SERVER -S cn -u -b $BASE "$1" $VARS | perl -MMIME::Base64 -n -00 -e 's/\n //g;s/(?<=:: )(\S+)/decode_base64($1)/eg;print'
