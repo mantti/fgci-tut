@@ -1,7 +1,7 @@
 ---
 # bios_newest_name: "BIOS_0FR48_LN_2.3.4.BIN"
-bios_newest_name: "BIOS_Y4Y95_LN_2.5.5.BIN"
-bios_newest_version: "2.5.5"
+bios_newest_name: "R730_BIOS_78R68_LN_2.7.0.BIN"
+bios_newest_version: "2.7.0"
 
 #ib_firmware_newest_name: "fw-ConnectX3-rel-2_36_5000-079DJ3-FlexBoot-3.4.718.bin"
 ib_firmware_newest_name: "fw-ConnectX3-rel-2_42_5000-MCX353A-FCB_A2-A5-FlexBoot-3.4.752.bin"
