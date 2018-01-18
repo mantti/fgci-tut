@@ -15,10 +15,8 @@
   delegate_to: "{{ hyper }}"
 
 - name: Check libvirt storage pool
-  command: /usr/bin/virsh pool-info {{ libvirt_pool_name }}
+  virt_pool: state=active name="{{ libvirt_pool_name }}"
   register: libvirt_pool_check
-  run_once: true
-  ignore_errors: true
   delegate_to: "{{ hyper }}"
 
 - name: Define libvirt storage pool
@@ -28,15 +26,11 @@
   delegate_to: "{{ hyper }}"
 
 - name: Start libvirt storage pool
-  command: /usr/bin/virsh pool-start {{ libvirt_pool_name }}
-  run_once: true
-  when: libvirt_pool_check.rc == 1
+  virt_pool: state=active name="{{ lib_virt_pool_name }}"
   delegate_to: "{{ hyper }}"
 
 - name: set libvirt storage pool autostart
-  command: /usr/bin/virsh pool-autostart {{ libvirt_pool_name }}
-  run_once: true
-  when: libvirt_pool_check.rc == 1
+  virt_pool: autostart=yes name="{{libvirt_pool_name}}"
   delegate_to: "{{ hyper }}"
 
 - name: run virt-install script
