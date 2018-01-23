@@ -3,7 +3,7 @@ myhostname = {{ ansible_fqdn }}
 {% if postfix_mydomain is defined %}
 mydomain = {{ postfix_mydomain }}
 {% endif %}
-myorigin = $myhostname
+myorigin = $mydomain
 {% if postfix_relayhost is defined %}
 relayhost = {{ postfix_relayhost }}
 {% endif %}
