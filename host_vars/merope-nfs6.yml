@@ -26,3 +26,7 @@ autofs_indirect_maps:
           fstype: "nfs,rw,bg,hard,intr,tcp,resvport"
           url: "narvi-nfs:/home"
 
+# Directory we'll want to du
+du_dirs: "/bmt-data"
+
+ansible_user: "root"
