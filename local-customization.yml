@@ -27,7 +27,7 @@
   roles:
   - local-customization-login
 
-#- hosts: nfs
-#  roles:
-#  - local-customization-nfs
+- hosts: nfs
+  roles:
+  - local-customization-nfs
 
