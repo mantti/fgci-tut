@@ -14,11 +14,11 @@ if {[llength $argv] == 0} {
 ssh_connect $argv
 
 set timeout 60
-
+send "\r"
 expect {
-	"*</>hpiLO-> " {
+	"*</>hpiLO->*" {
 		send "vsp\r"
-		expect "Starting virtual serial port. " {send "\r"}
+		expect "*Starting virtual serial port.*" {send "\r"}
 
 		# Clear screen
 		puts \033\[2J
