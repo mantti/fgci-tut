@@ -16,3 +16,6 @@
 [submodule "roles/ansible-role-beegfs"]
 	path = roles/ansible-role-beegfs
 	url = git@github.com:mantti/ansible-role-beegfs.git
+[submodule "roles/local-customization-nfs"]
+	path = roles/local-customization-nfs
+	url = git@github.com:mantti/ansible-role-local-customization-nfs.git
