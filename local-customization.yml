@@ -29,5 +29,5 @@
 
 - hosts: nfs
   roles:
-  - local-customization-nfs
+  - { role: local-customization-nfs, tags: [ 'nfs' ] }
 
