@@ -1,0 +1,165 @@
+---
+
+carina_server: "10.1.2.10"
+internal_interface: "em1"
+#ib_interface: "ib0"
+
+ip_address: "{{int_ip_addr}}"
+#ib_net_mask: "255.255.0.0"
+
+network_ether_interfaces:
+  - device: "{{internal_interface}}"
+    bootproto: "dhcp"
+    onboot: "yes"
+    nm_controlled: "no"
+    type: "Ethernet"
+
+infiniband_available: False
+#rdma_type: "mlnx_ofed"
+#rdma_core_packages: "mlnx-ofed-hpc"
+#rdma_enabled: True
+#rdma_manage_rdma: False
+#rdma_configure_single_port: False
+#rdma_manage_rdma: False
+#rdma_manage_opensm: False
+
+#rdma_configure_single_port: False
+
+#rdma_core_packages:
+#  - mlnx-ofa_kernel
+
+#rdma_service_name: "openibd"
+#rdma_opensm_service: "opensmd"
+#rdma_opensm_partitions_conf_path: "/etc/opensm/partitions.conf"
+
+yum_repos:
+  - ""
+#  - { name: "Mellanox-IB", description: "Mellanox IB-stack repo", url: "http://{{ kickstart_server_ip }}/Mellanox-repo/{{ ansible_distribution_major_version }}", gpgcheck: no, enabled: yes }
+#  - { name: "beegfs-rhel7", description: "BeeGFS RHEL7 repo", url: "http://www.beegfs.io/release/beegfs_6/dists/rhel{{ ansible_distribution_major_version }}", gpgkey: "http://www.beegfs.io/release/beegfs_6/gpg/RPM-GPG-KEY-beegfs", gpgcheck: no, enabled: yes }
+
+networks:
+  - "network --onboot=yes --bootproto=dhcp --device={{ internal_interface }} --noipv6"
+
+# Slurm
+slurm_type: "compute"
+# NTP
+ntp_config_server: [ "{{ carina_server }}" ]
+# DNS
+nameserver1: "10.1.10.2"
+# CVMFS
+cvmfs_http_proxy: "{{ http_proxy }}"
+# YUM proxy
+yum_proxy: "{{ http_proxy }}"
+# Install NHC from FGCI's yum
+nhc_github: False
+# Run ansible-pull during kickstart
+ansible_pull_kickstart: true
+# SSHD
+sshd:
+ PermitRootLogin: "without-password"
+
+# Fetch the sshd host_keys from NFS
+generate_ssh_host_keys: False
+generate_ssh_known_hosts: False
+install_ssh_host_keys_to_nfs: False
+install_ssh_host_keys_from_nfs: True
+install_ssh_known_hosts_from_http: True
+
+# PAM
+pam_enabled: True
+pam_use_sssd: False
+pam_enable_slurm: True
+slurm_access_groups:
+ - "{{ admingroup | default('admin') }}"
+ - "root"
+ - "wheel"
+
+#
+autofs_indirect_maps: 
+  - name: autofs.home
+    path: /home
+    mounts:
+      - name: "ojalajar"
+        fstype: "nfs,rw,bg,hard,intr,tcp,rsize=1048576,wsize=1048576,resvport"
+        url: "{{ carina_server }}:/oja/ojalajar"
+
+#Limits for MPI
+limits_domains:
+  - domain: '*'
+    type: 'hard'
+    item: memlock
+    value: unlimited
+  - domain: '*'
+    type: 'soft'
+    item: memlock
+    value: unlimited
+  - domain: '*'
+    type: 'hard'
+    item: stack
+    value: unlimited
+  - domain: '*'
+    type: 'soft'
+    item: stack
+    value: unlimited
+  - domain: '*'
+    type: 'hard'
+    item: nproc
+    value: 512
+
+## PXE
+
+kickstart_profile: FGCI-compute-node
+
+# Note on Compute nodes partitioning:
+#
+# Each site can fine tune this to match their needs
+# Only requeirement is that Root part needs at least 200GB
+# Please note that if you rather not have a /local partition you can remove it.
+# If so, don't forget to add "--grow" in part / line
+
+#  bootloader --location=mbr --append="selinux=0" --boot-drive=sda
+#  autopart --type=lvm
+#  clearpart --all --initlabel --drives=sda
+#  zerombr
+
+kickstart_packages: |
+  atlas
+  blas
+  bonnie++
+  cvs
+  epel-release
+  fftw
+  fftw2
+  gcc
+  gcc-c++
+  gcc-gfortran
+  git
+  glibc.i686
+  iperf
+  java-1.8.0-openjdk
+  lapack
+  libcgroup
+  libgcc.i686
+  libgfortran
+  libstdc++.i686
+  libxml2.i686
+  mcelog
+  netcdf
+  nfs-utils
+  nscd
+  numpy
+  openssh-server
+  perl-Filesys-Df
+  rsync
+  subversion
+  xerces-c
+  yum-plugin-fastestmirror
+  Lmod
+  wget
+  bzip2
+
+kickstart_extra_post_commands: |
+  "echo no extra kickstart post commands defined"
+# We don't want update-notifications from compute-nodes
+hourly_update_message: no
+daily_update_message: no
