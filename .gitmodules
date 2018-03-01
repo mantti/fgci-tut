@@ -22,3 +22,6 @@
 [submodule "VARS"]
 	path = VARS
 	url = git@tutmac-git.cc.tut.fi:TCSC/Cluster-Vars.git
+[submodule "files/admin"]
+	path = files/admin
+	url = git@tutmac-git.cc.tut.fi:TCSC/admin-scripts.git
