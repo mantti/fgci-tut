@@ -19,3 +19,6 @@
 [submodule "roles/local-customization-nfs"]
 	path = roles/local-customization-nfs
 	url = git@github.com:mantti/ansible-role-local-customization-nfs.git
+[submodule "VARS"]
+	path = VARS
+	url = git@tutmac-git.cc.tut.fi:TCSC/Cluster-Vars.git
