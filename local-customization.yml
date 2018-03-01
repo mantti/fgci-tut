@@ -1,6 +1,7 @@
 ---
 
 - name: Local customization
+
   hosts: production
   strategy: free
 # strategy: debug
@@ -10,9 +11,10 @@
 
 - hosts: all
   roles:
-  - { role: ansible-role-firmware-updates, when: ansible_virtualization_role != "guest" }
+#- { role: ansible-role-firmware-updates, tags: [ 'fw' ], when: ansible_virtualization_role != "guest" }
+  - { role: ansible-role-firmware-updates, tags: [ 'fw' ] }
   - { role: ansible-role-serial-console-root, when: ansible_virtualization_role != "guest" }
-  - local-customization
+  - { role: local-customization }
 
 - hosts: install
   roles:
