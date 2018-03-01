@@ -7,8 +7,8 @@
 #  strategy: free
 #  tasks: [ ]
 
-- name: Compute Nodes
-  hosts: carina
+- name: Carina Nodes
+  hosts: carina-g
   strategy: free
 # strategy: debug
 #  remote_user: "{{ my_remote_user | default('root') }}"
@@ -71,14 +71,14 @@
 
 # Adding a role here? Make sure to add it to local.yml too for the role to be used with ansible-pull
 
-- name: GPU Nodes
-  hosts: compute
-  strategy: free
-  remote_user: root
-  become: yes
+#- name: GPU Nodes
+#  hosts: compute
+#  strategy: free
+#  remote_user: root
+#  become: yes
 
-  roles: 
-  - { role: ansible-role-cuda, tags: [ 'cuda', 'nvidia' ] }
+#  roles: 
+#  - { role: ansible-role-cuda, tags: [ 'cuda', 'nvidia' ] }
 
 
 # Local addons to this playbook
