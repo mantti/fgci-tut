@@ -25,3 +25,6 @@
 [submodule "files/admin"]
 	path = files/admin
 	url = git@tutmac-git.cc.tut.fi:TCSC/admin-scripts.git
+[submodule "roles/local-customization-admin"]
+	path = roles/local-customization-admin
+	url = https://github.com/mantti/ansible-role-local-customization-admin.git
