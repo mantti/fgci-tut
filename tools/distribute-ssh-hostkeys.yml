@@ -12,12 +12,29 @@
 
   # Ensure ssh-keys 
   tasks: 
+    - name: Find all existing ssh-keys
+      find:
+        paths: ../files/nodes
+        patterns: "*"
+        file_type: directory
+      register: my_key_files
+
+    - name: Debug found items
+      debug:
+        msg:
+            - "First of found items: {{ my_key_files[1] }}"
+
     - name: Copy nodes public_key to global ssh_known_hosts
-      known_hosts: path='files/nodes/ssh_known_hosts'
+      known_hosts: path='files/ssh_known_hosts'
                name='{{ item }}'
-               key="{{ item }} {{ lookup('file', '../files/nodes/' + item + '/ssh/ssh_host_ed25519_key.pub') }}"
+               key="{{ item }} {{ lookup('file', item + '/ssh/ssh_host_ed25519_key.pub') }}"
       delegate_to: localhost
-      with_items: "{{ groups.compute }}"
+      with_items: "{{ my_key_files.files }}"
+#      with_fileglob: 
+#        - "../files/nodes/*"
+      # when: item.state == 'directory'
+
+      #with_items: "{{ groups.compute }}"
 
     - name: write ed25519 pub keys into a known_hosts ip
       known_hosts: path='files/nodes/ssh_known_hosts'
