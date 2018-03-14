@@ -1,6 +1,6 @@
 ---
 - name: Generate carina ssh_known_hosts
-  hosts: localhost
+  hosts: carina
   gather_facts: false
 
   tasks:
@@ -18,3 +18,10 @@
                key="{{ hostvars[item].int_ip_addr }} {{ lookup('file', 'files/nodes/' + item + '/ssh/ssh_host_ed25519_key.pub') }}"
     delegate_to: localhost
     with_items: "{{ groups.carina_g }}"
+  - name: Let's copy generated file to carina-server
+    copy: 
+        src: files/nodes/carina_known_hosts
+        dest: /etc/ssh/ssh_known_hosts
+        owner: root
+        mode: 0444
+    delegate_to: carina
