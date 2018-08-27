@@ -1,24 +1,24 @@
 [submodule "roles/ansible-role-firmware-updates"]
 	path = roles/ansible-role-firmware-updates
-	url = https://github.com/mantti/ansible-role-firmware-updates.git
+	url = git@github.com:mantti/ansible-role-firmware-updates.git
 [submodule "roles/ansible-role-serial-console-root"]
 	path = roles/ansible-role-serial-console-root
-	url = https://github.com/mantti/ansible-role-serial-console-root.git
+	url = git@github.com:mantti/ansible-role-serial-console-root.git
 [submodule "roles/local-customization-login"]
 	path = roles/local-customization-login
-	url = https://github.com/mantti/ansible-role-local-customization-login.git
+	url = git@github.com:mantti/ansible-role-local-customization-login.git
 [submodule "roles/local-customization"]
 	path = roles/local-customization
-	url = https://github.com/mantti/ansible-role-local-customization.git
+	url = git@github.com:mantti/ansible-role-local-customization.git
 [submodule "roles/local-customization-install"]
 	path = roles/local-customization-install
-	url = https://github.com/mantti/ansible-role-local-customization-install.git
+	url = git@github.com:mantti/ansible-role-local-customization-install.git
 [submodule "roles/ansible-role-beegfs"]
 	path = roles/ansible-role-beegfs
-	url = https://github.com/mantti/ansible-role-beegfs.git
+	url = git@github.com:mantti/ansible-role-beegfs.git
 [submodule "roles/local-customization-nfs"]
 	path = roles/local-customization-nfs
-	url = https://github.com/mantti/ansible-role-local-customization-nfs.git
+	url = git@github.com:mantti/ansible-role-local-customization-nfs.git
 [submodule "VARS"]
 	path = VARS
 	url = git@adm-gitlab.cc.tut.fi:TCSC/Cluster-Vars.git
@@ -27,4 +27,4 @@
 	url = git@adm-gitlab.cc.tut.fi:TCSC/admin-scripts.git
 [submodule "roles/local-customization-admin"]
 	path = roles/local-customization-admin
-	url = https://github.com/mantti/ansible-role-local-customization-admin.git
+	url = git@github.com:mantti/ansible-role-local-customization-admin.git
