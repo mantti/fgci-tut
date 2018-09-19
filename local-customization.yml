@@ -27,7 +27,7 @@
 - hosts: login
   remote_user: root
   roles:
-  - local-customization-login
+  - { role: local-customization-login, tags: [ 'login' ] }
 
 - hosts: nfs
   roles:
