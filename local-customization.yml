@@ -9,13 +9,6 @@
   become: yes
 
 
-- hosts: all
-  roles:
-#- { role: ansible-role-firmware-updates, tags: [ 'fw' ], when: ansible_virtualization_role != "guest" }
-  - { role: ansible-role-firmware-updates, tags: [ 'fw' ] }
-  - { role: ansible-role-serial-console-root, when: ansible_virtualization_role != "guest" }
-  - { role: local-customization }
-
 - hosts: install
   roles:
   - local-customization-install
@@ -29,7 +22,19 @@
   roles:
   - { role: local-customization-login, tags: [ 'login' ] }
 
+- hosts: gpu
+  roles:
+  - { role: local-customization-gpu, tags: [ 'gpu' ] }
+
 - hosts: nfs
   roles:
   - { role: local-customization-nfs, tags: [ 'nfs' ] }
+
+- hosts: all
+  roles:
+#- { role: ansible-role-firmware-updates, tags: [ 'fw' ], when: ansible_virtualization_role != "guest" }
+  - { role: ansible-role-firmware-updates, tags: [ 'fw' ] }
+  - { role: ansible-role-serial-console-root, when: ansible_virtualization_role != "guest" }
+  - { role: local-customization }
+
 
