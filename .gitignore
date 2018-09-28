@@ -1,5 +1,5 @@
 hosts
-ssh.config
+#ssh.config
 ansible.cfg
 group_vars/*
 # Note: the main secrets.yml file should go into group_vars/all/ folder
