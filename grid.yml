@@ -6,6 +6,13 @@
   hosts: production
   tasks: [ ]
 
+- name: First add users to grid node as root
+  hosts: grid
+  remote_user: root
+
+  roles: 
+  - { role: ansible-role-users, tags: [ 'users', 'admin-users', 'user' ] }
+
 - name: Grid Node
   hosts: grid
   remote_user: root
