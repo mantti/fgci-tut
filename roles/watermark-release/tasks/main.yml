@@ -1,9 +1,0 @@
----
-- name: Copy fgci-ansible-release file to /etc
-  copy:
-     src: fgci-ansible-release
-     dest: /etc
-     owner: root
-     mode: "0644"
-     backup: no
-
