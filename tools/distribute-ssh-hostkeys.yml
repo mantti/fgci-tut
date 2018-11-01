@@ -1,0 +1,69 @@
+---
+# This playbook will copy files/nodes/ssh_known_hosts
+# from localhost to install:/var/www/html
+#
+# TODO: 
+#
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    - bckpDir: "backup"
+    - backup_dir: "/tmp/{{ bckpDir }}"
+
+  # Ensure ssh-keys 
+  tasks: 
+    - name: Find all existing ssh-keys
+      find:
+        paths: files/nodes
+        patterns: "ssh_host_ed25519_key.pub"
+        file_type: file
+        recurse: yes
+      register: my_key_files
+
+    - name: Lets dig hostnames
+      set_fact: my_host="{{ item.path | regex_replace('files/nodes/(.*)/ssh/ssh_host_ed25519_key.pub', '\\1') }}"
+      register: my_hosts
+      with_items: "{{ my_key_files.files }}"
+
+    - name: Debug found items
+      debug:
+         var: my_hosts
+#        msg:
+#            - "Name of item: {{ item.path | regex_replace('files/nodes/(.*)/ssh/ssh_host_ed25519_key.pub', '\\1') }}"
+#- "First publickey: {{ lookup('file',item.path + '/ssh/ssh_host_ed25519_key.pub') }}"
+#      with_items: "{{ my_hosts }}"
+
+    - name: Copy nodes public_key to global ssh_known_hosts
+      known_hosts: path='files/ssh_known_hosts'
+               name='{{ item.path | regex_replace('files/nodes/(.*)/ssh/ssh_host_ed25519_key.pub', '\\1') }}'
+               key="{{ lookup('file',item.path) }}"
+      delegate_to: localhost
+      with_items: "{{ my_key_files.files }}"
+#      with_fileglob: 
+#        - "../files/nodes/*"
+      # when: item.state == 'directory'
+
+      #with_items: "{{ groups.compute }}"
+
+    - name: write ed25519 pub keys into a known_hosts ip
+      known_hosts: path='files/nodes/ssh_known_hosts'
+               name='{{ hostvars[item].int_ip_addr }}'
+               key="{{ hostvars[item].int_ip_addr }} {{ lookup('file', '../files/nodes/' + item + '/ssh/ssh_host_ed25519_key.pub') }}"
+      delegate_to: localhost
+      with_items: "{{ groups.compute }}"
+
+- hosts: install
+  tasks:
+    - name: Distribute global ssh_known_hosts
+      copy: src=files/nodes/ssh_known_hosts dest=/var/www/html 
+               mode=0644 backup=yes
+
+- hosts: install,login
+  tasks:
+    - name: copy the known_hosts files to the install node /etc/ssh/
+      copy: src=files/nodes/ssh_known_hosts 
+               dest=/etc/ssh/ssh_known_hosts 
+               owner=root group=root mode=0644 backup=yes
+
+
