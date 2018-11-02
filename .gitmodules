@@ -31,3 +31,7 @@
 [submodule "roles/local-customization-gpu"]
 	path = roles/local-customization-gpu
 	url = git@github.com:mantti/ansible-role-local-customization-gpu.git
+[submodule "sshd-host-keys"]
+	path = files/nodes
+	url = git@adm-gitlab.cc.tut.fi:TCSC/narvi-ssh-keys.git
+
