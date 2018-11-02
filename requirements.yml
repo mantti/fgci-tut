@@ -220,3 +220,7 @@
 - src: https://github.com/mantti/ansible-role-local-customization-login
   path: roles
   version: v0.2
+  
+- src: https://github.com/mantti/ansible-role-local-customization
+  path: roles
+  version: v0.2
