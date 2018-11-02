@@ -1,0 +1,28 @@
+---
+- hosts: all
+  gather_facts: false
+  vars:
+    - keydir: "files/nodes"
+
+  tasks:
+   - name: Copy private key to hosts
+     copy: src={{ keydir }}/{{ inventory_hostname }}/ssh/ssh_host_ed25519_key
+           dest=/etc/ssh/ssh_host_ed25519_key
+           owner=root group=root mode=0400
+     notify: restart sshd
+   - name: Copy public key to hosts
+     copy: src={{ keydir }}/{{ inventory_hostname }}/ssh/ssh_host_ed25519_key.pub
+           dest=/etc/ssh/ssh_host_ed25519_key.pub
+           owner=root group=root mode=0444
+     notify: restart sshd
+   - name: Create roots authorized_keys
+     tags: root-keys
+     authorized_key: key={{ item }} user=root state=present
+     with_items: "{{ root_keys }}"
+
+  handlers:
+   - name: restart sshd
+     service: 
+       name: sshd
+       state: reloaded
+
