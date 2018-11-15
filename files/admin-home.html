@@ -1,7 +1,7 @@
 <html><head>
-<title>Merope Cluster Admin Homepage</title>
+<title>TCSC Cluster Admin Homepage</title>
 </head><body>
-<H2>Merope</H2>
+<H2>TCSC</H2>
 <P><H3>Konsolit</H3>
 <table border="1">
   <tr>
@@ -27,11 +27,6 @@
 	    <a target="_blank" href="https://scratch-ilo/">Scratch</a><br/>
 	    <a target="_blank" href="https://melogin-ilo/">Uusi Frontend melogin</a><br/>
 	    <a target="_blank" href="https://medfe-ilo/">Hadoopin rootnode</a><br/>
-	    <a target="_blank" href="https://medat1-ilo/">Hadoopin datanode1</a><br/>
-	    <a target="_blank" href="https://medat2-ilo/">Hadoopin datanode2</a><br/>
-	    <a target="_blank" href="https://medat3-ilo/">Hadoopin datanode3</a><br/>
-	    <a target="_blank" href="https://medat4-ilo/">Hadoopin datanode4</a><br/>
-	    <a target="_blank" href="https://medat5-ilo/">Hadoopin datanode5</a><br/>
 	</td>
   </tr>
   <tr>
@@ -40,13 +35,22 @@
   </tr>
   <tr>
 	<th>Narvin management</th>
-	<td> <a target="_blank" href="https://10.3.10.9/">narvi-admin</a><br/>
+   	<td> <a target="_blank" href="https://10.3.10.9/">narvi-admin</a><br/>
 	     <a target="_blank" href="https://10.3.10.2/">narvi-frontend</a><br/>
 		 <a target="_blank" href="https://10.3.10.3/">narvi-nfs</a><br/>
 		 <a target="_blank" href="https://10.3.10.4/">narvi-ib01</a><br/>
 		 <a target="_blank" href="https://10.3.10.5/">narvi-ib02</a><br/>
-		 <a target="_blank" href="https://10.3.10.11/">na01</a><br/>
-		 ... jne.
+    </td>
+  </tr>
+  <tr>
+	<th>Hosts</th>
+    <td>
+{% for item in groups['all'] %}
+{% if hostvars[item].mgmt_ip_addr is defined %}
+        <a target="_blank" href="https://{{ hostvars[item].mgmt_ip_addr }}/">{{ hostvars[item].inventory_hostname }}-ilo</a><br/>
+{% endif %}
+{% endfor %}
+
 	</td>
   </tr>
 </table>
