@@ -1,0 +1,15 @@
+{{ ansible_managed }}
+{% for item in groups['all'] %}
+  {% set key = 'files/nodes/' + item + '/ssh/ssh_host_ed25519_key.pub' %}
+    {% set pubkey = lookup ('file', key ignore missing %}
+  {% if key | e %}
+    {{ item }} {% include key ignore missing %} 
+  {% endif %}
+{% endfor %}
+
+{# files/nodes/na01/ssh/ssh_host_ed25519_key.pub
+  {% if exist files/nodes/na01/ssh/ssh_host.ed25519key.pub %}
+    {{ item }}
+  {% endif %}
+#}
+
