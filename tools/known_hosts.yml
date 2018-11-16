@@ -1,0 +1,45 @@
+---
+- hosts: all
+  gather_facts: false
+  vars:
+    - keydir: "files/nodes"
+    - myhosts: "ssh_known_hosts"
+
+  tasks:
+   - name: Let's see if we have ssh-key for host
+     local_action: stat path={{ keydir }}/{{ inventory_hostname }}/ssh/ssh_host_ed25519_key.pub
+     register: pubkey
+
+   - name: Add pubkey to known_hosts if it exists
+     local_action: 
+        module: known_hosts
+        path: "{{ keydir }}/{{ myhosts }}"
+        name: "{{ inventory_hostname }}"
+        key: "{{ inventory_hostname }} {{ lookup('file', keydir + '/' + inventory_hostname + '/ssh/ssh_host_ed25519_key.pub') }}"
+        state: present
+     when: pubkey.stat.exists
+   - name: Add pubkey to also with ip.addr
+     local_action: 
+        module: known_hosts
+        path: "{{ keydir }}/{{ myhosts }}"
+        name: "{{ int_ip_addr }}"
+        key: "{{ int_ip_addr }} {{ lookup('file', keydir + '/' + inventory_hostname + '/ssh/ssh_host_ed25519_key.pub') }}"
+        state: present
+     when: pubkey.stat.exists
+   - name: Add pubkey to also with infiniband-interface if exists
+     local_action: 
+        module: known_hosts
+        path: "{{ keydir }}/{{ myhosts }}"
+        name: "{{ inventory_hostname }}-ilo"
+        key: "{{ inventory_hostname }}-ilo {{ lookup('file', keydir + '/' + inventory_hostname + '/ssh/ssh_host_ed25519_key.pub') }}"
+        state: present
+     when: pubkey.stat.exists and infiniband_available
+   - name: Add pubkey to also with infiniband address if exists
+     local_action: 
+        module: known_hosts
+        path: "{{ keydir }}/{{ myhosts }}"
+        name: "{{ ib_ip_addr }}"
+        key: "{{ ib_ip_addr }} {{ lookup('file', keydir + '/' + inventory_hostname + '/ssh/ssh_host_ed25519_key.pub') }}"
+        state: present
+     when: pubkey.stat.exists and infiniband_available
+
