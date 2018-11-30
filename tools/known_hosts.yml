@@ -30,8 +30,8 @@
      local_action: 
         module: known_hosts
         path: "{{ keydir }}/{{ myhosts }}"
-        name: "{{ inventory_hostname }}-ilo"
-        key: "{{ inventory_hostname }}-ilo {{ lookup('file', keydir + '/' + inventory_hostname + '/ssh/ssh_host_ed25519_key.pub') }}"
+        name: "{{ inventory_hostname }}-ib"
+        key: "{{ inventory_hostname }}-ib {{ lookup('file', keydir + '/' + inventory_hostname + '/ssh/ssh_host_ed25519_key.pub') }}"
         state: present
      when: pubkey.stat.exists and infiniband_available
    - name: Add pubkey to also with infiniband address if exists
