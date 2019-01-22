@@ -10,7 +10,7 @@
 
 {% for item in hosts_file_grid_group_to_populate %}
 {{ hostvars[item].int_ip_addr }} {{ siteName }}-grid.{{ intDomain }} {{ siteName }}-grid
-{{ hostvars[item].ext_ip_addr }} {{ item }}-grid.{{ siteDomain }}
+{{ hostvars[item].ext_ip_addr }} {{ item }}.{{ siteDomain }}
 {% endfor %}
 
 {% for item in hosts_file_install_group_to_populate %}
