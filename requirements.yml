@@ -217,9 +217,9 @@
   path: roles
   version: v1.0.2
 
-- src: https://github.com/jabl/ansible-role-ohpc-repo
+- src: https://github.com/mantti/ansible-role-ohpc-repo
   path: roles
-  version: v0.1
+  version: v0.2
   
 - src: https://github.com/mantti/ansible-role-local-customization-login
   path: roles
