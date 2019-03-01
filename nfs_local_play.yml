@@ -1,4 +1,6 @@
 ---
 - name: Local addons playbook (nfs) 
   hosts: nfs
-
+  roles:
+    - { role: ansible-role-lvm, tags: ['lvm'] }
+    - { role: ansible-role-mounts, tags: ['mount'] }

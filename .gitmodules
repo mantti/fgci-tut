@@ -34,3 +34,9 @@
 [submodule "roles/local-customization"]
 	path = roles/local-customization
 	url = git@github.com:mantti/ansible-role-local-customization.git
+[submodule "roles/ansible-role-mounts"]
+	path = roles/ansible-role-mounts
+	url = git@github.com:mantti/ansible-role-mounts.git
+[submodule "roles/ansible-role-lvm"]
+	path = roles/ansible-role-lvm
+	url = git@github.com:mantti/ansible-role-lvm.git
