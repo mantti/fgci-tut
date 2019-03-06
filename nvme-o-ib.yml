@@ -1,0 +1,72 @@
+---
+- hosts: c4140
+  gather_facts: false
+  vars:
+    - nvme_modules:
+        - { name: "nvmet" }
+        - { name: "nvmet-rdma" }
+        - { name: "nvme-rdma" }
+    - nvme_subsystem: "/sys/kernel/config/nvmet/subsystems/{{ inventory_hostname }}_nvme"
+    - nvme_ns: "{{ nvme_subsystem }}/namespaces/10"
+    - nvme_device: "/dev/nvme0n1"
+    - nvme_port: "/sys/kernel/config/nvmet/ports/1"
+    - nvme_packages:
+        - kmod-mlnx-nvme
+        - mlnx-nvme
+        - nvmetcli
+
+  tasks:
+    - name: install Mellanox nvme-drivers
+      tags: yum
+      yum:
+        name: "{{ nvme_packages }}"
+        state: present
+      when: nvme_packages is defined 
+
+    - name: Add server modules
+      modprobe:
+        name: "{{ item.name }}"
+        params: "{{ item.params | default(omit) }}"
+      with_items: "{{ nvme_modules }}"
+      when: nvme_modules is defined
+
+    - name: Make nvme subsystem
+      tags: subsystem
+      file:
+        path: "{{ nvme_subsystem }}"
+        state: directory
+
+    - name: make nvme namespace
+      tags: namespace
+      file:
+        path: "{{ nvme_ns }}"
+        state: directory
+
+    - name: Add device to namespace
+      tags: namespace
+      shell: echo {{nvme_device}} > {{ nvme_ns }}/device_path
+
+    - name: Enable namespace
+      tags: namespace
+      shell: echo 1 > {{ nvme_ns }}/enable
+
+    - name: Create nvme port
+      tags: port
+      file:
+        path: "{{ nvme_port }}"
+        state: directory
+
+    - name: Set nvme port ip addr and transport type
+      tags: port
+      shell: | 
+        echo {{ ib_ip_addr }} > {{ nvme_port }}/addr_traddr
+        echo rdma > {{ nvme_port }}/addr_trtype
+        echo 4420 > {{ nvme_port }}/addr_trsvcid
+        echo ipv4 > {{ nvme_port }}/addr_adrfam
+
+    - name: Create nvme target symlink
+      tags: symlink
+      file:
+        path: "{{ nvme_port }}/subsystems/{{ inventory_hostname }}_nvme"
+        src: "{{ nvme_subsystem }}"
+        state: link
