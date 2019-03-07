@@ -2,9 +2,11 @@
 - hosts: c4140
   gather_facts: false
   vars:
-    - nvme_modules:
+    - nvme_modules_target:
         - { name: "nvmet" }
         - { name: "nvmet-rdma" }
+        - { name: "nvme-rdma" }
+    - nvme_modules_host:
         - { name: "nvme-rdma" }
     - nvme_subsystem: "/sys/kernel/config/nvmet/subsystems/{{ inventory_hostname }}_nvme"
     - nvme_ns: "{{ nvme_subsystem }}/namespaces/10"
@@ -13,51 +15,53 @@
     - nvme_packages:
         - kmod-mlnx-nvme
         - mlnx-nvme
+        - nvme-cli
         - nvmetcli
 
   tasks:
     - name: install Mellanox nvme-drivers
-      tags: yum
+      tags: target, host, yum
       yum:
         name: "{{ nvme_packages }}"
         state: present
       when: nvme_packages is defined 
 
-    - name: Add server modules
+    - name: Add target modules
+      tags: target, modules
       modprobe:
         name: "{{ item.name }}"
         params: "{{ item.params | default(omit) }}"
-      with_items: "{{ nvme_modules }}"
-      when: nvme_modules is defined
+      with_items: "{{ nvme_modules_target }}"
+      when: nvme_modules_target is defined
 
     - name: Make nvme subsystem
-      tags: subsystem
+      tags: target, subsystem
       file:
         path: "{{ nvme_subsystem }}"
         state: directory
 
     - name: make nvme namespace
-      tags: namespace
+      tags: target, namespace
       file:
         path: "{{ nvme_ns }}"
         state: directory
 
     - name: Add device to namespace
-      tags: namespace
+      tags: target, namespace
       shell: echo {{nvme_device}} > {{ nvme_ns }}/device_path
 
     - name: Enable namespace
-      tags: namespace
+      tags: target, namespace
       shell: echo 1 > {{ nvme_ns }}/enable
 
     - name: Create nvme port
-      tags: port
+      tags: target, port
       file:
         path: "{{ nvme_port }}"
         state: directory
 
     - name: Set nvme port ip addr and transport type
-      tags: port
+      tags: target, port
       shell: | 
         echo {{ ib_ip_addr }} > {{ nvme_port }}/addr_traddr
         echo rdma > {{ nvme_port }}/addr_trtype
@@ -65,8 +69,18 @@
         echo ipv4 > {{ nvme_port }}/addr_adrfam
 
     - name: Create nvme target symlink
-      tags: symlink
+      tags: target, symlink
       file:
         path: "{{ nvme_port }}/subsystems/{{ inventory_hostname }}_nvme"
         src: "{{ nvme_subsystem }}"
         state: link
+
+    - name: Add host modules
+      tags: host, modules
+      modprobe:
+        name: "{{ item.name }}"
+        params: "{{ item.params | default(omit) }}"
+      with_items: "{{ nvme_modules_host }}"
+      when: nvme_modules_host is defined
+
+
