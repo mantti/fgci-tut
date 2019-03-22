@@ -2,4 +2,5 @@
 - name: Local addons playbook (compute) 
   hosts: compute
   roles:
+  - { role: ansible-role-sacct_gpu, tags: ['local','gpu'] }
   - { role: local-customization, tags: ['local'] }
