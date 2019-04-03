@@ -40,6 +40,10 @@
         path: "{{ nvme_subsystem }}"
         state: directory
 
+    - name: Allow access to target
+      tags: target, subsystem
+      shell: echo 1 > {{ nvme_subsystem }}/attr_allow_any_host
+
     - name: make nvme namespace
       tags: target, namespace
       file:
