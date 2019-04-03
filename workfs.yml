@@ -11,6 +11,7 @@
   roles: 
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
 #  - { role: local-customization, tags: [ 'host-keys' ] }
 #  - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
 #  - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
