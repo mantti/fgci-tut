@@ -20,7 +20,7 @@ backup/
 hosts_*
 *.bak
 *~
-*.swp
+*.sw?
 
 # notes file
 notes
