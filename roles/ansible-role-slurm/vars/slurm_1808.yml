@@ -1,0 +1,39 @@
+---
+#OHPC
+
+slurm_packages:
+ - slurm-ohpc
+ - slurm-contribs-ohpc
+ - slurm-devel-ohpc
+ - slurm-pam_slurm-ohpc
+ - slurm-perlapi-ohpc
+ - slurm-torque-ohpc
+ - slurm-libpmi-ohpc
+ - slurm-example-configs-ohpc
+
+slurm_service_packages:
+ - lua-devel
+ - mailx
+ - slurm-slurmctld-ohpc
+
+slurm_compute_packages:
+ - slurm-slurmd-ohpc
+
+slurm_conf_version_specific_params_list:
+ - "SlurmctldSyslogDebug={{ slurm_slurmctld_syslog_debug }}"
+ - "SlurmdSyslogDebug={{ slurm_slurmd_syslog_debug }}"
+
+slurm_slurmdbd_conf_version_specific_params_list:
+ - "DebugLevelSyslog={{ slurm_slurmdbd_syslog_debug }}"
+
+slurm_cgroup_constrain_kmem_space: "no" # Workaround for Linux kernel bug, see slurm bug #5082
+
+slurmd_service: "slurmd.service"
+slurmctld_service: "slurmctld.service"
+slurm_sql_service: "mariadb"
+slurmdbd_packages:
+ - "mariadb"
+ - "mariadb-server"
+ - "mariadb-devel"
+ - "MySQL-python"
+ - "slurm-slurmdbd-ohpc"
