@@ -39,6 +39,7 @@
   - { role: ansible-role-pdsh-genders, tags: [ 'pdsh', 'genders' ] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
+  - { role: ansible-role-dhcp_server, tags: ['dhcp'] }
   - { role: local-customization, tags: ['local'] }
 
 # Local addons to this playbook
