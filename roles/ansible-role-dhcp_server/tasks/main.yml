@@ -23,6 +23,10 @@
   file: state=touch path=/etc/dhcp/dhcpd.d/nodes.conf owner=root mode=0644
   changed_when: false
 
+- name: create a dummy static.conf file
+  file: state=touch path=/etc/dhcp/dhcpd.d/static.conf owner=root mode=0644
+  changed_when: false
+
 # Generate configuration
 - name: Generate dhcpd.conf
   template: src=dhcpd.conf.j2 dest={{ dhcp_server_config }} owner=root group=root mode=0644 validate='/usr/sbin/dhcpd -t -cf %s'
