@@ -117,7 +117,7 @@
   path: roles
   version: v1.6.2
 
-- src: https://github.com/mantti/ansible-role-nhc
+- src: https://github.com/CSCfi/ansible-role-nhc
   path: roles
   version: v1.3.5
 
