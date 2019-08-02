@@ -1,5 +1,5 @@
 ---
-- hosts: c4140
+- hosts: c4140, oss01, oss02
   gather_facts: false
   vars:
     - nvme_modules_target:
@@ -17,52 +17,77 @@
         - mlnx-nvme
         - nvme-cli
         - nvmetcli
+    - nvme_packages_host:
+        - kmod-mlnx-nvme
+        - mlnx-nvme
+        - nvme-cli
 
   tasks:
-    - name: install Mellanox nvme-drivers
-      tags: target, host, yum
+    - name: install Mellanox nvme-drivers to target
+      tags: target, yum
       yum:
         name: "{{ nvme_packages }}"
         state: present
-      when: nvme_packages is defined 
+      when: nvme_packages is defined and nvme_target
 
-    - name: Add target modules
+    - name: install Mellanox nvme-drivers to clienthost
+      tags: host, yum
+      yum:
+        name: "{{ nvme_packages_host }}"
+        state: present
+      when: nvme_packages_host is defined and nvme_host
+
+    - name: Add target modules for sharing nvme-storage
       tags: target, modules
       modprobe:
         name: "{{ item.name }}"
         params: "{{ item.params | default(omit) }}"
       with_items: "{{ nvme_modules_target }}"
-      when: nvme_modules_target is defined
+      when: nvme_modules_target is defined and nvme_target
+
+    - name: load modules for accessing nvme-target
+      tags: host, modules
+      modprobe:
+        name: "{{ item.name }}"
+        params: "{{ item.params | default(omit) }}"
+      with_items: "{{ nvme_modules_host }}"
+      when: nvme_modules_host is defined and nvme_host
 
     - name: Make nvme subsystem
       tags: target, subsystem
       file:
         path: "{{ nvme_subsystem }}"
         state: directory
+      when: nvme_target
 
     - name: Allow access to target
       tags: target, subsystem
       shell: echo 1 > {{ nvme_subsystem }}/attr_allow_any_host
+      when: nvme_target
 
     - name: make nvme namespace
       tags: target, namespace
       file:
         path: "{{ nvme_ns }}"
         state: directory
+      when: nvme_target
 
     - name: Add device to namespace
       tags: target, namespace
       shell: echo {{nvme_device}} > {{ nvme_ns }}/device_path
+      when: nvme_target
 
     - name: Enable namespace
       tags: target, namespace
       shell: echo 1 > {{ nvme_ns }}/enable
+      when: nvme_target
 
     - name: Create nvme port
       tags: target, port
       file:
         path: "{{ nvme_port }}"
         state: directory
+      when: nvme_target
 
     - name: Set nvme port ip addr and transport type
       tags: target, port
@@ -71,6 +96,7 @@
         echo rdma > {{ nvme_port }}/addr_trtype
         echo 4420 > {{ nvme_port }}/addr_trsvcid
         echo ipv4 > {{ nvme_port }}/addr_adrfam
+      when: nvme_target
 
     - name: Create nvme target symlink
       tags: target, symlink
@@ -78,13 +104,13 @@
         path: "{{ nvme_port }}/subsystems/{{ inventory_hostname }}_nvme"
         src: "{{ nvme_subsystem }}"
         state: link
+      when: nvme_target
 
-    - name: Add host modules
-      tags: host, modules
-      modprobe:
-        name: "{{ item.name }}"
-        params: "{{ item.params | default(omit) }}"
-      with_items: "{{ nvme_modules_host }}"
-      when: nvme_modules_host is defined
+    - name: lets connect to targets
+      tags: host, connect
+      shell: | 
+        nvme connect -t rdma -n {{ item.name }} -a {{ item.ip }} -s 4420
+      with_items: "{{ nvme_osts }}"
+      when: nvme_osts is defined and nvme_host
 
-
+#nvme connect -t rdma -n nag10_nvme -a 10.2.10.110 -s 4420
