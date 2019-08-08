@@ -34,6 +34,7 @@
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
+  - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
   - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
   - { role: local-customization, tags: ['local'] }
 
