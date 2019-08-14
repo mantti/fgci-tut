@@ -43,3 +43,41 @@
         state: present
      when: pubkey.stat.exists and infiniband_available
 
+- hosts: install
+  gather_facts: false
+  vars:
+    - ssh_host_keys_dir: "/home/admin/nodes"
+    - ssh_known_hosts_dir: "/var/www/html"
+  tasks:
+    - name: copy the known_hosts files to the install node /etc/ssh/
+      copy: src=files/nodes/ssh_known_hosts 
+        dest=/etc/ssh/ssh_known_hosts 
+        owner=root group=root mode=0644 backup=yes
+      when: generate_ssh_known_hosts|bool
+
+    - name: copy the known_hosts file to the shared directory ssh_known_hosts_dir www
+      copy: src=files/nodes/ssh_known_hosts
+        dest={{ ssh_known_hosts_dir }}/ssh_known_hosts
+        mode=0644 backup=yes
+      when: generate_ssh_known_hosts|bool
+
+#    - name: copy the host keys to the install node ssh_host_keys_dir
+#  	  copy: src=files/nodes/{{ item[0] }}/ssh/{{ item[1] }} 
+#        dest={{ ssh_host_keys_dir }}/{{ item[0] }}/ssh/{{ item[1] }} 
+#        owner=root group=admin mode=0640 backup=yes
+#      with_nested: 
+#        - "{{ groups.compute }}"
+#        - "{{ ssh_host_key_files }}"
+#      when: generate_ssh_known_hosts|bool
+#      delegate_to: install
+
+#    - name: copy the host pub keys to the install node ssh_hosts_keys_dir
+#      copy: src=files/nodes/{{ item[0] }}/ssh/{{ item[1] }}.pub 
+#        dest={{ ssh_host_keys_dir }}/{{ item[0] }}/ssh/{{ item[1] }}.pub 
+#        owner=root group=admin mode=0640 backup=yes
+#      with_nested: 
+#       - "{{ groups.compute }}"
+#       - "{{ ssh_host_key_files }}"
+#      when: generate_ssh_known_hosts|bool
+#      delegate_to: install
+
