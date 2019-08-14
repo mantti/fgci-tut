@@ -1,6 +1,6 @@
 net:
     - net type: o2ib0
       local NI(s):
-        - nid: "{{ lustre_mgs }}@o2ib"
+        - nid: "{{ ib_ip_addr }}@o2ib"
           interfaces:
                 0: "{{ lustre_network_devices[0] }}"

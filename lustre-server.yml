@@ -6,8 +6,13 @@
   hosts: production
   tasks: [ ]
 
-- name: NFS Node
-  hosts: nfs
+- name: Lustre MDS
+  hosts: mds00, mds01
+  remote_user: root
+  become: yes
+
+- name: Lustre OSS
+  hosts: oss00, oss01, oss02, oss03, oss04
   remote_user: root
   become: yes
 
@@ -15,7 +20,7 @@
   - { role: watermark-release, tags: [ 'always' ]  }
   - { role: network_interface, tags: [ 'network' ] }
   - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
-  - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
+# - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: ansible-role-ferm-firewall, tags: [ 'firewall', 'network' ] }
   - { role: dns, tags: [ 'dns' ] }
@@ -34,17 +39,17 @@
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
-  - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
-  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
+#  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
+  - { role: ansible-role-lustre-server, tags: ['lustre'] }
   - { role: local-customization, tags: ['local'] }
 
-- name: Mount /home and /scratch on Install Node
-  hosts: install
-  become: yes
+#- name: Mount /home and /scratch on Install Node
+#  hosts: install
+#  become: yes
 
-  roles:
-  - { role: ansible-role-nfs_mount, tags: [ 'nfsmount' ] }
-  - { role: ansible-role-sshd-host-keys, tags: [ 'host-keys' ] }
+#  roles:
+#  - { role: ansible-role-nfs_mount, tags: [ 'nfsmount' ] }
+#  - { role: ansible-role-sshd-host-keys, tags: [ 'host-keys' ] }
 
 
 # Local addons to this playbook
