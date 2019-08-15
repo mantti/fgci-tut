@@ -12,14 +12,14 @@
   become: yes
 
 - name: Lustre OSS
-  hosts: oss00, oss01, oss02, oss03, oss04
+  hosts: oss00, oss01, oss02, oss03, oss04, workfs1, workfs2, workfs3, workfs4, workfs5
   remote_user: root
   become: yes
 
   roles:
   - { role: watermark-release, tags: [ 'always' ]  }
   - { role: network_interface, tags: [ 'network' ] }
-  - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
+  - { role: ansible-role-hosts-int, tags: [ 'hosts' ] }
 # - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: ansible-role-ferm-firewall, tags: [ 'firewall', 'network' ] }
