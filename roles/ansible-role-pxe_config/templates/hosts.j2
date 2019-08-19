@@ -42,5 +42,8 @@
 {% if hostvars[item].ib_ip_addr is defined %}
 {{ hostvars[item].ib_ip_addr }} {{ item }}-ib.{{ intDomain }} {{ item }}-ib
 {% endif %}
+{% if hostvars[item].ext_ip_addr is defined %}
+{{ hostvars[item].ext_ip_addr }} {{ item }}
+{% endif %}
 {% endfor %}
 
