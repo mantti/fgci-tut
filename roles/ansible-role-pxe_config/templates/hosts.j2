@@ -27,7 +27,9 @@
 {% endfor %}
 
 {% for item in hosts_file_extra_group_to_populate %}
+{% if hostvars[item].int_ip_addr is defined %}
 {{ hostvars[item].int_ip_addr }} {{ item }}.{{ intDomain }} {{ item }}
+{% endif %}
 {% if hostvars[item].ib_ip_addr is defined %}
 {{ hostvars[item].ib_ip_addr }} {{ item }}-ib {{ item }}-ib.{{ intDomain }}.{{ siteDomain }}
 {% endif %}

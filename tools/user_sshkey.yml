@@ -1,0 +1,15 @@
+---
+- hosts: install
+  gather_facts: false
+  vars_prompt:
+    - name: username
+      prompt: "Give username to add ssh-key to:\n"
+      private: no
+    - name: pubkey
+      prompt: "Give filename to contain public ssh-key:\n"
+      private: no
+
+  tasks: 
+    - name: Lets add pubkey to users authorized_keys
+      authorized_key: key="{{ lookup('file', pubkey) }}" state=present user="{{ username }}"
+  
