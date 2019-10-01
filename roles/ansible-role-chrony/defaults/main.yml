@@ -1,0 +1,19 @@
+---
+# using ntp_config_server for backwards compatibility
+ntp_config_server:
+    - "0.pool.ntp.org" 
+    - "1.pool.ntp.org"
+    - "2.pool.ntp.org"
+    - "3.pool.ntp.org"
+chrony_ntp_servers: "{{ ntp_config_server }}"
+
+chrony_pkg_state: "present"
+chrony_remove_ntp: True
+
+# populate chrony_allow_deny to also have chrony serve time
+chrony_allow_deny:
+   - "allow 10.0.0.0/8"
+
+chrony_bindaddresses:
+   - "::1"
+   - "127.0.0.1"
