@@ -11,10 +11,11 @@
      - restart munge
 
   - name: copy the munge key from NFS when slurm_munge_key_from_nfs is True
-    command: cp -v {{ slurm_munge_key_nfs }} /etc/munge/munge.key creates=/etc/munge/munge.key
+    command: cp -f -v {{ slurm_munge_key_nfs }} /etc/munge/munge.key creates=/etc/munge/munge.key
     when: slurm_munge_key_from_nfs == True
     notify:
      - restart munge
+     - restart slurmd
 
   - name: set permissions on the munge key from NFS
     file: path=/etc/munge/munge.key mode=0400 owner=munge group=munge
