@@ -10,6 +10,8 @@
   hosts: mds00, mds01
   remote_user: root
   become: yes
+  roles:
+  - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
 
 - name: Lustre OSS
   hosts: oss00, oss01, oss02, oss03, oss04, workfs1, workfs2, workfs3, workfs4, workfs5
