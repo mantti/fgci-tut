@@ -43,3 +43,6 @@
 [submodule "roles/ansible-role-lustre-server"]
 	path = roles/ansible-role-lustre-server
 	url = git@github.com:mantti/ansible-role-lustre-server.git
+[submodule "roles/ansible-role-insight"]
+	path = roles/ansible-role-insight
+	url = git@github.com:mantti/ansible-role-insight.git
