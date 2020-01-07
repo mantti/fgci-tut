@@ -3,11 +3,11 @@
 - name: Local customization
 
   hosts: production
+  gather_facts: no
   strategy: free
 # strategy: debug
   remote_user: root
   become: yes
-
 
 - hosts: install
   roles:
