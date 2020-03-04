@@ -46,3 +46,6 @@
 [submodule "roles/ansible-role-insight"]
 	path = roles/ansible-role-insight
 	url = git@github.com:mantti/ansible-role-insight.git
+[submodule "roles/ansible-role-slurm-spank-gpu"]
+	path = roles/ansible-role-slurm-spank-gpu
+	url = git@github.com:mantti/ansible-role-slurm-spank-gpu.git

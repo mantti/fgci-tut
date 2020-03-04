@@ -1,4 +1,6 @@
 ---
 - name: Local addons playbook (login) 
   hosts: login
+  roles:
+  - { role: ansible-role-slurm-spank-gpu, tags: ['local', 'spank'] }
 
