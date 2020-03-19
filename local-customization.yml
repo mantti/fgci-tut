@@ -20,7 +20,7 @@
 - hosts: login
   remote_user: root
   roles:
-  - { role: local-customization-login, tags: [ 'login' ] }
+  - { role: local-customization-login, tags: [ 'login' ], when: "'login' in group_names" }
 
 - hosts: gpu
   roles:
