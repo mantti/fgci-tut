@@ -18,7 +18,7 @@
 	url = git@adm-gitlab.cc.tut.fi:TCSC/admin-scripts.git
 [submodule "roles/local-customization-admin"]
 	path = roles/local-customization-admin
-	url = git@github.com:mantti/ansible-role-local-customization-admin.git
+	url = git@adm-gitlab.cc.tut.fi:TCSC/ansible-role-local-customization-admin.git
 [submodule "roles/local-customization-gpu"]
 	path = roles/local-customization-gpu
 	url = git@github.com:mantti/ansible-role-local-customization-gpu.git
