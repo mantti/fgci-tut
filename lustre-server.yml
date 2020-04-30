@@ -20,14 +20,15 @@
 
   roles:
 #  - { role: watermark-release, tags: [ 'always' ]  }
+  - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
+  - { role: ansible-role-lustre-server, only_kernel: True }
   - { role: network_interface, tags: [ 'network' ] }
   - { role: ansible-role-hosts-int, tags: [ 'hosts' ] }
 # - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
-  - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: ansible-role-ferm-firewall, tags: [ 'firewall', 'network' ] }
   - { role: dns, tags: [ 'dns' ] }
   - { role: ansible-role-chrony, tags: [ 'ntp', 'chrony' ] }
-  - { role: ansible-role-yum-cron-2, tags: [ 'yumcron' ] }
+#  - { role: ansible-role-yum-cron-2, tags: [ 'yumcron' ] }
   - { role: ansible-role-rsyslog, tags: [ 'rsyslog' ] }
   - { role: ansible-role-nis, tags: [ 'nis' ] }
   - { role: ansible-role-aliases, tags: [ 'aliases', 'email' ] }
@@ -35,14 +36,14 @@
   - { role: ansible-role-idmapd, tags: [ 'idmapd' ] }
   - { role: ansible-role-nfs, tags: [ 'nfs' ] }
 #  - { role: ansible-role-cvmfs, tags: [ 'cvmfs' ] }
-  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
+#  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: ansible-role-dell, tags: [ 'dell' ] }
   - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
   - { role: ansible-role-postfix, tags: [ 'postfix', 'mail' ] }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
 #  - { role: ansible-role-flowdock, tags: [ 'flowdock', 'always' ] }
-  - { role: ansible-role-lustre-server, tags: ['lustre'] }
+  - { role: ansible-role-lustre-server, only_kernel: False, tags: ['lustre'] }
   - { role: local-customization, tags: ['local'] }
 
 #- name: Mount /home and /scratch on Install Node
