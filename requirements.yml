@@ -232,3 +232,7 @@
 
 - src: https://github.com/AaltoScienceIT/ansible-role-fgci-ssh-keys
   path: roles
+
+- src: https://github.com/mantti/ansible-role-local-customization.git
+  path: roles
+  version: v0.5
