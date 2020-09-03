@@ -49,3 +49,6 @@
 [submodule "roles/ansible-role-slurm-spank-gpu"]
 	path = roles/ansible-role-slurm-spank-gpu
 	url = git@github.com:mantti/ansible-role-slurm-spank-gpu.git
+[submodule "roles/ansible-role-opencv"]
+	path = roles/ansible-role-opencv
+	url = git@github.com:mantti/ansible-role-opencv.git

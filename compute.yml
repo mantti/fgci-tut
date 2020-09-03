@@ -34,6 +34,7 @@
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
   - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-opencv, tags: [ 'opencv', 'network' ], when: "'opencv_nodes' in group_names" }
   - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
   - { role: ansible-role-chrony, tags: [ 'ntp', 'chrony' ] }
   - { role: ansible-role-autofs, tags: [ 'autofs' ] }
