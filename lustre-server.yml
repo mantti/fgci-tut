@@ -11,6 +11,9 @@
   remote_user: root
   become: yes
   roles:
+  - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
+  - { role: ansible-role-lustre-server, only_kernel: True }
+  - { role: ansible-role-lustre-server, only_kernel: False, tags: ['lustre'] }
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
 
 - name: Lustre OSS

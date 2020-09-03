@@ -32,7 +32,9 @@
   - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-ohpc-repo, tags: [ 'yum', 'repos', 'ohpc' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
+  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: network_interface, tags: [ 'network' ] }
+  - { role: ansible-role-opencv, tags: [ 'opencv', 'network' ], when: "'opencv_nodes' in group_names" }
   - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
   - { role: ansible-role-chrony, tags: [ 'ntp', 'chrony' ] }
   - { role: ansible-role-autofs, tags: [ 'autofs' ] }
@@ -51,7 +53,6 @@
   - { role: ansible-role-nhc-scripts, tags: [ 'nhc', 'slurm', 'nhc-scripts' ] }
   - { role: ansible-role-slurm, tags: [ 'slurm' ] }
   - { role: ansible-role-cvmfs, tags: [ 'cvmfs' ] }
-  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: ansible-role-system-limits, tags: [ 'limits', 'limit' ] }
   - { role: ansible-role-arc-client, tags: [ 'arc', 'nordugrid' ] }
   - { role: ansible-role-fgci-bash, tags: [ 'bash'] }
@@ -61,7 +62,7 @@
   - { role: ansible-role-sshd, tags: [ 'sshd', 'ssh' ] }
   - { role: ansible-role-collectd, tags: [ 'collectd', 'monitoring' ] }
   - { role: ansible-role-serial-console, tags: [ 'serial', 'console' ] }
-  - { role: ansible-role-lustre_client, tags: [ 'lustre' ] }
+  - { role: ansible-role-lustre_client, tags: [ 'lustre' ], when: lustre_client_enabled }
   - { role: ansible-role-systemd-journal, tags: [ 'systemd', 'journal', 'journald' ] }
   - { role: ansible-role-lldpd, tags: [ 'lldpd', 'lldp' ] }
   - { role: ansible-role-singularity, tags: [ 'singularity' ] }
