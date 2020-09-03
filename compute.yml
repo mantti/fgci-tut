@@ -32,6 +32,7 @@
   - { role: ansible-role-fgci-repo, tags: [ 'fgci7', 'repos' ] }
   - { role: ansible-role-ohpc-repo, tags: [ 'yum', 'repos', 'ohpc' ] }
   - { role: ansible-role-yum, tags: [ 'yum', 'repos', 'login' ] }
+  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: network_interface, tags: [ 'network' ] }
   - { role: ansible-role-hosts-int, tags: [ 'hosts'] }
   - { role: ansible-role-chrony, tags: [ 'ntp', 'chrony' ] }
@@ -51,7 +52,6 @@
   - { role: ansible-role-nhc-scripts, tags: [ 'nhc', 'slurm', 'nhc-scripts' ] }
   - { role: ansible-role-slurm, tags: [ 'slurm' ] }
   - { role: ansible-role-cvmfs, tags: [ 'cvmfs' ] }
-  - { role: ansible-role-rdma, tags: [ 'rdma', 'infiniband' ] }
   - { role: ansible-role-system-limits, tags: [ 'limits', 'limit' ] }
   - { role: ansible-role-arc-client, tags: [ 'arc', 'nordugrid' ] }
   - { role: ansible-role-fgci-bash, tags: [ 'bash'] }
