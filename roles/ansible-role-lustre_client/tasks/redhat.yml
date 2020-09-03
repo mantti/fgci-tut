@@ -1,25 +1,39 @@
 ---
 # tasks file for ansible-role-lustre_client
 
-# here rpms's can be defined as a local file
+- name: Ensure lustre-client repository is present
+  yum_repository:
+    name: lustre-client
+    description: Lustre Client Yum Repository
+    baseurl: "{{ lustre_repo_base_url }}"
+    gpgcheck: no
+  when: lustre_repo_base_url is defined
+
 - name: install lustre rpms (can be defined as a local file)
   yum:
     name: "{{ lustre_packages }}"
     state: present
+  when: lustre_packages is defined
+
+- name: Lustre lnet.conf
+  template:
+    src: lnet.conf.j2
+    dest: /etc/lnet.conf
+    owner: root 
+    group: root 
+    mode: 0644
+  notify: lnet service restart
 
 - name: Lustre modprobe.d confings
-  template: src=lustre.conf.j2 dest=/etc/modprobe.d/lustre.conf
-            owner=root group=root mode=0644
+  template:
+    src: lustre.conf.j2
+    dest: /etc/modprobe.d/lustre.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: lustre_lnet_networks is defined or lustre_modprobe_options is defined
+  notify: lnet service restart
 
-- name: Lustre lnet config
-  template: src=lnet.conf.j2 dest=/etc/lnet.conf
-            owner=root group=root mode=0644
-
-- name: Enable lnet systemd service
-  systemd:
-    name: lnet
-    state: started
-    enabled: True
 
 - name: Check Lustre networks
   command: /usr/sbin/ip link show {{ item }}
@@ -31,18 +45,34 @@
 
 - name: Bring up Lustre networks if down
   command: /usr/sbin/ifup {{ item[1] }}
-  when: item[0].rc != 0
   with_nested:
     - "{{ lustre_networks.results }}"
     - "{{ lustre_network_devices|default([]) }}"
-  when: ansible_connection != 'chroot'
+  when:
+    - ansible_connection != 'chroot'
+    - item[0].rc != 0
 
 - name: Load Lustre modules
-  modprobe: name=lustre
-  when: ansible_connection != 'chroot'
+  modprobe:
+    name: lustre
+  when:
+    - ansible_connection != 'chroot'
+    - ansible_connection != 'docker'
+    - lustre_enable_service is not defined
 
-- name: create lustre mount directory
-  file: "path={{ lustre_mount_dir }} state=directory mode={{ lustre_dir_mode }} owner=root group=root"
+- name: Ensure lnet service is enabled and running
+  systemd:
+    name: lnet
+    state: started
+    enabled: "{{ lustre_enable_service }}"
+  when: lustre_enable_service is defined
 
 - name: Add Lustre entry to /etc/fstab, make sure it is mounted
-  mount: fstype=lustre name="{{ lustre_mount_dir }}" opts="{{ lustre_mount_opts }}" src="{{ lustre_mount_src }}" state="{{ 'mounted' if ansible_connection != 'chroot' else 'present' }}"
+  mount:
+    fstype: lustre
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    opts: "{{ item.opts | default(lustre_mount_opts) | join(',') }}"
+    state: "{{ lustre_mount_state }}"
+  loop: "{{ lustre_mounts }}"
+  when: lustre_mounts is defined
