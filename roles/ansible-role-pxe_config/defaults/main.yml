@@ -56,5 +56,3 @@ kickstart_extra_post_commands: |
 # Should kickstart set up the serial console
 serial_console_enable: false
 
-kickstart_kernel: "vmlinuz"
-kickstart_initrd: "initrd.img"
