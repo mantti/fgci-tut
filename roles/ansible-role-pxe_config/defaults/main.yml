@@ -1,0 +1,60 @@
+---
+# defaults file for ansible-role-pxe_config
+#
+## setting yum_proxy adds a --proxy= to the url command in kickstart.cfg
+#yum_proxy: "http://10.1.1.4:3128"
+#
+# A VNC server is running on the system being kickstarted so one can
+# troubleshoot problems. If "vnc_password" is set and is between 6 and
+# 8 characters long, this is used as the password needed when
+# connecting to the VNC server, otherwise no password is needed.
+#
+# If central_log_host is set, kickstart uses that as a syslog server.
+
+# ansible-pull at the end of the kickstart is disabled by default, set it to true in the group_vars
+ansible_pull_kickstart: false
+
+# hosts_file_to_populate we populate with nodes and their IP addresses
+hosts_file_to_populate: "/etc/hosts"
+# These are the ansible groups we populate
+# Set them to "" to disable
+hosts_file_pxe_group_to_populate: "{{ groups.pxe_bootable_nodes }}"
+hosts_file_admin_group_to_populate: "{{ groups.admin }}"
+hosts_file_grid_group_to_populate: "{{ groups.grid }}"
+hosts_file_install_group_to_populate: "{{ groups.install }}"
+hosts_file_login_group_to_populate: "{{ groups.login }}"
+hosts_file_extra_group_to_populate: ""
+
+#hosts_file_inventory_location points to where the ansible inventory file is
+hosts_file_group_to_populate: "pxe_bootable_nodes"
+hosts_file_inventory_location: "hosts"
+
+dhcp_common_domain: "fgci.csc.fi"
+dhcp_tftp_server_ip: "10.1.1.2"
+
+intDomain: "int"
+
+kickstart_profile: "FGCI-compute-node"
+kickstart_server_ip: 10.1.1.2
+kickstart_partitions: |
+  bootloader --location=mbr --append="selinux=0" --boot-drive=sda
+  autopart --type=lvm
+  zerombr
+  clearpart --all --initlabel --drives=sda
+kickstart_packages: |
+  ansible
+  git
+
+# define these _pre_ variables to run commands before the kickstart installation begins
+#kickstart_pre_option: "%pre --interpreter=/usr/bin/python --log=/mnt/sysimage/root/ks-pre.log"
+#kickstart_extra_pre_commands: |
+# 'print("no extra kickstart pre commands defined")'
+
+kickstart_extra_post_commands: |
+ "echo no extra kickstart post commands defined"
+
+# Should kickstart set up the serial console
+serial_console_enable: false
+
+kickstart_kernel: "vmlinuz"
+kickstart_initrd: "initrd.img"
