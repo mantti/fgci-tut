@@ -73,9 +73,9 @@
   path: roles
   version: v1.4.5
 
-- src: https://github.com/CSCfi/ansible-role-yum
+- src: https://github.com/fgci-org/ansible-role-yum
   path: roles
-  version: v1.5.5
+  version: v1.5.6
 
 - src: https://github.com/CSCfi/ansible-role-flowdock
   path: roles
@@ -105,21 +105,17 @@
   path: roles
   version: v1.3.1
 
-- src: https://github.com/CSCfi/ansible-role-arc-frontend
-  path: roles
-  version: v1.4.9
-
 - src: https://github.com/CSCfi/ansible-role-arc-frontend-6
   path: roles
-  version: v1.2.5
+  version: v1.3.0
 
 - src: https://github.com/fgci-org/ansible-role-fgci-bash
   path: roles
   version: v1.3.0
 
-- src: https://github.com/mantti/ansible-role-cuda
+- src: https://github.com/fgci-org/ansible-role-cuda
   path: roles
-  version: v1.6.7-1
+  version: v1.6.8
 
 - src: https://github.com/CSCfi/ansible-role-nhc
   path: roles
