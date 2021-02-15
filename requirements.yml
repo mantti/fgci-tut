@@ -209,9 +209,9 @@
   path: roles
   version: v1.0.4
 
-- src: https://github.com/CSCfi/ansible-role-chrony
+- src: https://github.com/mantti/ansible-role-chrony
   path: roles
-  version: v1.1.5
+  version: v1.1.5-1
 
 - src: https://github.com/CSCfi/ansible-lldpd
   path: roles
