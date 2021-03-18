@@ -2,9 +2,15 @@
 {% if dns_resolv_search is defined %}
 search {{ dns_resolv_search }}
 {% endif %}
+{% if nameservers is defined %}
+{% for item in nameservers %}
+nameserver {{ item }}
+{% endfor %}
+{% else %}
 nameserver {{ nameserver1 }}
 nameserver {{ nameserver2 }}
 nameserver {{ nameserver3 }}
+{% endif %}
 {% if dns_resolv_sortlist is defined %}
 sortlist {{ dns_resolv_sortlist }}
 {% endif %}
