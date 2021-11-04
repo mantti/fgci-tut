@@ -240,12 +240,12 @@
 
 - src: https://github.com/mantti/ansible-role-local-customization.git
   path: roles
-  version: v0.5
+  version: v0.7
 
 - src: https://github.com/mantti/ansible-drbd
   name: ansible-role-drbd
   path: roles
-  version: v0.1
+  version: v0.2
 
 - src: https://github.com/OndrejHome/ansible.ha-cluster-pacemaker.git 
   name: ansible-role-pacemaker

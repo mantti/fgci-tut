@@ -1,0 +1,30 @@
+---
+# tasks file for ansible-role-scratch-mount
+- name: Let's make sure we don't have scratch in /etc/fstab
+  tags: scratch
+  lineinfile: 
+    path: "/etc/fstab"
+    line: "10.2.20.10@o2ib:/lustre/scratch /scratch lustre _netdev,noatime,localflock,noauto,lazystatfs,x-systemd.automount,x-systemd.requires=lnet.service 0 0"
+    backup: no 
+    regexp: "10.2.20.10@o2ib:/lustre/scratch /scratch lustre _netdev,noatime,localflock,noauto,lazystatfs,x-systemd.automount,x-systemd.requires=lnet.service 0 0"
+    state: absent
+
+- name: We'll make sure that it isn't mounted
+  tags: scratch
+  mount:
+    path: "/scratch"
+    state: "unmounted"
+
+- name: Remove link from subdirectory
+  tags: scratch
+  file:
+    path: "/scratch/scratch"
+    state: "absent"
+
+- name: Let's make sure that old directory is removed
+  tags: scratch
+  file:
+    path: "/scratch"
+    src: "/lustre/scratch"
+    state: "link"
+    force: true
