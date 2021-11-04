@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: network_cli
+  gather_facts: False
+
+  roles:
+    - ansible-role-scratch-mount
+
+- hosts: localhost
+  connection: netconf
+  gather_facts: False
+
+  roles:
+    - ansible-role-scratch-mount
