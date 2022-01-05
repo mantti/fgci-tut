@@ -1,4 +1,6 @@
 ---
 - name: Local addons playbook (install) 
   hosts: install
-
+  
+  roles:
+    - { role: ansible-role-sshd-host-keys, tags: [host-keys] }
