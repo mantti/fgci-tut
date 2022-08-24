@@ -5,4 +5,5 @@
   - { role: ansible-role-sacct_gpu, tags: ['local','gpu'] }
   - { role: ansible-role-slurm-spank-gpu, tags: ['local', 'gpu', 'spank'] }
   - { role: ansible-role-scratch-mount, tags: ['scratch'] }
+  - { role: ansible-role-users, tags: [ 'users', 'admin-users', 'user' ] }
   - { role: local-customization, tags: ['local'] }
