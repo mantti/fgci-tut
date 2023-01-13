@@ -5,6 +5,7 @@
 
   roles: 
   - { role: ansible-role-users, tags: [ 'users', 'admin-users', 'user' ] }
+  - { role: ansible-role-fgci-ssh-keys, tags: [ 'root-ssh-keys' ] }
 
 - name:  Configure Admin Node
   hosts: admin
