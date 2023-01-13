@@ -90,9 +90,9 @@
   path: roles
   version: v1.0.1
 
-- src: https://github.com/CSCfi/ansible-role-nis
+- src: https://github.com/mantti/ansible-role-nis
   path: roles
-  version: v1.1.4
+  version: v1.1.5
 
 - src: https://github.com/fgci-org/ansible-role-nfs
   path: roles
@@ -206,9 +206,9 @@
   version: v1.1.6
   name: ansible-role-lldpd
 
-- src: https://github.com/CSCfi/ansible-role-singularity
+- src: https://github.com/mantti/ansible-role-apptainer
   path: roles
-  version: v1.0.6
+  version: v1.0.7
 
 - src: https://github.com/fgci-org/ansible-role-ohpc-repo
   path: roles

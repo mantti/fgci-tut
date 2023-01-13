@@ -3,4 +3,5 @@
   hosts: login
   roles:
   - { role: ansible-role-slurm-spank-gpu, tags: ['local', 'spank'] }
+  - { role: ansible-role-apptainer, tags: ['apptainer', 'singularity'] }
 
